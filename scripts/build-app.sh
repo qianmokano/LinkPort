@@ -6,11 +6,7 @@ APP_PATH="$PROJECT_ROOT/dist/LinkPort.app"
 STAGING_PATH="$PROJECT_ROOT/.build/LinkPort-staging.app"
 BINARIES=()
 
-# Asset compilation needs Xcode; select it only for this process, like test.sh.
-SELECTED_DEVELOPER="$(xcode-select -p)"
-if [[ -z "${DEVELOPER_DIR:-}" && "$SELECTED_DEVELOPER" == */CommandLineTools && -d /Applications/Xcode.app/Contents/Developer ]]; then
-    export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
-fi
+source "$PROJECT_ROOT/scripts/toolchain.sh"
 if ! xcrun --find actool >/dev/null 2>&1; then
     printf 'Building the Liquid Glass icon requires Xcode 27 or newer. Set DEVELOPER_DIR to its Developer directory.\n' >&2
     exit 1
@@ -19,6 +15,11 @@ fi
 BUILD_SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
 if (( ${BUILD_SDK_VERSION%%.*} < 27 )); then
     printf 'LinkPort requires the macOS 27 SDK. Select newer developer tools with DEVELOPER_DIR.\n' >&2
+    exit 1
+fi
+
+if [[ ! -f "$PROJECT_ROOT/LICENSE" ]]; then
+    printf 'The repository LICENSE is required to package LinkPort.\n' >&2
     exit 1
 fi
 
@@ -37,6 +38,7 @@ if [[ -e "$STAGING_PATH" ]]; then rm -r "$STAGING_PATH"; fi
 mkdir -p "$STAGING_PATH/Contents/MacOS" "$STAGING_PATH/Contents/Resources"
 lipo -create "${BINARIES[@]}" -output "$STAGING_PATH/Contents/MacOS/LinkPort"
 cp "$PROJECT_ROOT/Configuration/Info.plist" "$STAGING_PATH/Contents/Info.plist"
+cp "$PROJECT_ROOT/LICENSE" "$STAGING_PATH/Contents/Resources/LICENSE"
 cp -R "$PROJECT_ROOT/Sources/LinkPort/Resources/en.lproj" "$STAGING_PATH/Contents/Resources/"
 cp -R "$PROJECT_ROOT/Sources/LinkPort/Resources/zh-Hans.lproj" "$STAGING_PATH/Contents/Resources/"
 xcrun actool "$PROJECT_ROOT/Configuration/LinkPort.icon" \
@@ -60,6 +62,7 @@ fi
 mv "$STAGING_PATH" "$APP_PATH"
 ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$PROJECT_ROOT/.build/LinkPort.zip"
 mv -f "$PROJECT_ROOT/.build/LinkPort.zip" "$PROJECT_ROOT/dist/LinkPort.zip"
+(cd "$PROJECT_ROOT/dist" && shasum -a 256 LinkPort.zip > SHA256SUMS)
 if [[ -e "$PROJECT_ROOT/.build/LinkPort-previous.app" ]]; then
     rm -r "$PROJECT_ROOT/.build/LinkPort-previous.app"
 fi
