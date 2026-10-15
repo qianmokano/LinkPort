@@ -172,7 +172,7 @@ func invalidLanguagePreferencesFallBackToSystem(_ value: String) {
     system.browsers = [browser("new"), browser("chrome")]
     model.refresh()
     #expect(model.visibleBrowsers.map(\.id) == ["new"])
-    #expect(store.value.orderedIDs == ["chrome", "safari", "new"])
+    #expect(store.value.orderedIDs == ["new", "chrome", "safari"])
     model.finishWelcome()
     #expect(store.value.hasSeenWelcome)
 }
@@ -208,7 +208,7 @@ func browserRowsMoveToInsertionOffsets(_ scenario: (source: [Int], destination: 
     let system = FakeSystem()
     system.browsers = ["a", "b", "c", "d"].map { browser($0) }
     let store = MemoryStore(BrowserPreferences(
-        orderedIDs: ["a", "b", "c", "d", "missing"], hiddenIDs: ["b"],
+        orderedIDs: ["a", "b", "c", "d", "missing"], hiddenIDs: ["missing"],
         hasSeenWelcome: true, language: .simplifiedChinese
     ))
     let model = LinkController(bundleID: ownID, system: system, store: store)
@@ -217,7 +217,7 @@ func browserRowsMoveToInsertionOffsets(_ scenario: (source: [Int], destination: 
     model.moveBrowsers(fromOffsets: IndexSet(scenario.source), toOffset: scenario.destination)
     #expect(model.browsers.map(\.id) == scenario.expected)
     #expect(store.value.orderedIDs == scenario.expected + ["missing"])
-    #expect(store.value.hiddenIDs == ["b"])
+    #expect(store.value.hiddenIDs == ["missing"])
     #expect(store.value.language == .simplifiedChinese)
     #expect(store.value.hasSeenWelcome)
     #expect(model.selectedID == "c")
@@ -242,7 +242,7 @@ func browserRowsMoveByStableIdentifiers(_ scenario: (source: [String], before: S
     let system = FakeSystem()
     system.browsers = ["a", "b", "c", "d"].map { browser($0) }
     let store = MemoryStore(BrowserPreferences(
-        orderedIDs: ["a", "b", "c", "d", "missing"], hiddenIDs: ["b"],
+        orderedIDs: ["a", "b", "c", "d", "missing"], hiddenIDs: ["missing"],
         hasSeenWelcome: true, language: .simplifiedChinese
     ))
     let model = LinkController(bundleID: ownID, system: system, store: store)
@@ -251,7 +251,7 @@ func browserRowsMoveByStableIdentifiers(_ scenario: (source: [String], before: S
     model.moveBrowsers(withIDs: scenario.source, before: scenario.before)
     #expect(model.browsers.map(\.id) == scenario.expected)
     #expect(store.value.orderedIDs == scenario.expected + ["missing"])
-    #expect(store.value.hiddenIDs == ["b"])
+    #expect(store.value.hiddenIDs == ["missing"])
     #expect(store.value.language == .simplifiedChinese)
     #expect(store.value.hasSeenWelcome)
     #expect(model.selectedID == "c")
@@ -267,6 +267,80 @@ func browserRowsMoveByStableIdentifiers(_ scenario: (source: [String], before: S
     model.moveBrowsers(withIDs: ["chrome"], before: nil)
     #expect(model.browsers.map(\.id) == ["safari", "new", "chrome"])
     #expect(store.value.orderedIDs == ["safari", "new", "chrome"])
+}
+
+@Test @MainActor func browserGroupsMigrateAndRefreshWithoutChangingGroupOrder() {
+    let system = FakeSystem()
+    system.browsers = ["a", "b", "c", "d"].map { browser($0) }
+    let store = MemoryStore(BrowserPreferences(orderedIDs: ["c", "a", "d", "b", "missing"], hiddenIDs: ["c", "d"]))
+    let model = LinkController(bundleID: ownID, system: system, store: store)
+    #expect(model.browsers.map(\.id) == ["a", "b", "c", "d"])
+    #expect(store.value.orderedIDs == ["a", "b", "c", "d", "missing"])
+    system.browsers.append(browser("new"))
+    model.refresh()
+    #expect(model.browsers.map(\.id) == ["a", "b", "new", "c", "d"])
+    #expect(LinkController(bundleID: ownID, system: system, store: store).browsers == model.browsers)
+}
+
+@Test @MainActor func visibilityChangesMoveBrowserToGroupBoundary() {
+    let system = FakeSystem()
+    system.browsers = ["a", "b", "c", "d", "e"].map { browser($0) }
+    let store = MemoryStore(BrowserPreferences(
+        orderedIDs: ["a", "b", "c", "d", "e"], hiddenIDs: ["d", "e"],
+        hasSeenWelcome: true, language: .simplifiedChinese
+    ))
+    let model = LinkController(bundleID: ownID, system: system, store: store)
+    model.receive([url()])
+    model.select("b")
+    model.setHidden("a", hidden: true)
+    #expect(model.browsers.map(\.id) == ["b", "c", "a", "d", "e"])
+    model.setHidden("e", hidden: false)
+    #expect(model.browsers.map(\.id) == ["b", "c", "e", "a", "d"])
+    model.setHidden("e", hidden: false)
+    model.setHidden("a", hidden: true)
+    model.setHidden("missing", hidden: true)
+    #expect(model.browsers.map(\.id) == ["b", "c", "e", "a", "d"])
+    #expect(store.value.hiddenIDs == ["a", "d"])
+    #expect(model.selectedID == "b")
+    #expect(model.queue.current == url())
+    #expect(store.value.language == .simplifiedChinese)
+    #expect(store.value.hasSeenWelcome)
+    #expect(LinkController(bundleID: ownID, system: system, store: store).browsers == model.browsers)
+}
+
+@Test @MainActor func togglingLastBrowserHandlesEmptyGroups() {
+    let system = FakeSystem()
+    system.browsers = [browser("a")]
+    let model = LinkController(bundleID: ownID, system: system, store: MemoryStore())
+    model.setHidden("a", hidden: true)
+    #expect(model.browsers.map(\.id) == ["a"])
+    #expect(model.visibleBrowsers.isEmpty)
+    #expect(model.selectedID == nil)
+    model.setHidden("a", hidden: false)
+    #expect(model.visibleBrowsers.map(\.id) == ["a"])
+    #expect(model.selectedID == "a")
+}
+
+@Test @MainActor func reorderingKeepsEnabledAndDisabledGroupsSeparate() {
+    let system = FakeSystem()
+    system.browsers = ["a", "b", "c", "d"].map { browser($0) }
+    let store = MemoryStore(BrowserPreferences(orderedIDs: ["a", "b", "c", "d"], hiddenIDs: ["c", "d"]))
+    let model = LinkController(bundleID: ownID, system: system, store: store)
+    model.moveBrowsers(withIDs: ["a"], before: nil)
+    #expect(model.browsers.map(\.id) == ["b", "a", "c", "d"])
+    model.moveBrowsers(withIDs: ["d"], before: "b")
+    #expect(model.browsers.map(\.id) == ["b", "a", "d", "c"])
+    model.moveBrowser("a", by: 1)
+    model.moveBrowser("d", by: -1)
+    #expect(model.browsers.map(\.id) == ["b", "a", "d", "c"])
+    model.moveBrowsers(fromOffsets: IndexSet(integer: 0), toOffset: 4)
+    #expect(model.browsers.map(\.id) == ["a", "b", "d", "c"])
+    model.moveBrowsers(fromOffsets: IndexSet(integer: 3), toOffset: 0)
+    #expect(model.browsers.map(\.id) == ["a", "b", "c", "d"])
+    model.moveBrowsers(withIDs: ["d", "b"], before: "a")
+    #expect(model.browsers.map(\.id) == ["b", "a", "d", "c"])
+    #expect(store.value.hiddenIDs == ["c", "d"])
+    #expect(LinkController(bundleID: ownID, system: system, store: store).browsers == model.browsers)
 }
 
 @Test @MainActor func copyPreservesFullURLWithoutLaunchingBrowser() {

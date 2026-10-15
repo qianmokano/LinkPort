@@ -44,6 +44,9 @@ public enum BrowserCatalog {
         let unique = discovered.filter { $0.id != ownID && seen.insert($0.id).inserted }
         let positions = Dictionary(preferences.orderedIDs.enumerated().map { ($1, $0) }, uniquingKeysWith: min)
         return unique.sorted { lhs, rhs in
+            let leftHidden = preferences.hiddenIDs.contains(lhs.id)
+            let rightHidden = preferences.hiddenIDs.contains(rhs.id)
+            if leftHidden != rightHidden { return !leftHidden }
             let left = positions[lhs.id] ?? Int.max
             let right = positions[rhs.id] ?? Int.max
             if left != right { return left < right }

@@ -29,12 +29,9 @@ public final class LinkController {
 
     public func refresh() {
         browsers = BrowserCatalog.arrange(system.discoverBrowsers(), preferences: preferences, excluding: bundleID)
-        let known = Set(preferences.orderedIDs)
-        let additions = browsers.map(\.id).filter { !known.contains($0) }
-        if !additions.isEmpty {
-            preferences.orderedIDs.append(contentsOf: additions)
-            store.save(preferences)
-        }
+        let present = Set(browsers.map(\.id))
+        let order = browsers.map(\.id) + preferences.orderedIDs.filter { !present.contains($0) }
+        if order != preferences.orderedIDs { persistOrder(browsers) }
         if !visibleBrowsers.contains(where: { $0.id == selectedID }) { selectedID = visibleBrowsers.first?.id }
         handlers = system.defaultHandlers()
     }
@@ -60,9 +57,13 @@ public final class LinkController {
     }
 
     public func setHidden(_ id: String, hidden: Bool) {
-        guard browsers.contains(where: { $0.id == id }) else { return }
+        guard let browser = browsers.first(where: { $0.id == id }),
+              preferences.hiddenIDs.contains(id) != hidden else { return }
         if hidden { preferences.hiddenIDs.insert(id) } else { preferences.hiddenIDs.remove(id) }
-        store.save(preferences)
+        var reordered = browsers.filter { $0.id != id }
+        let boundary = reordered.firstIndex { preferences.hiddenIDs.contains($0.id) } ?? reordered.endIndex
+        reordered.insert(browser, at: boundary)
+        persistOrder(reordered)
         refresh()
     }
 
@@ -80,7 +81,8 @@ public final class LinkController {
     public func moveBrowser(_ id: String, by offset: Int) {
         guard let source = browsers.firstIndex(where: { $0.id == id }) else { return }
         let destination = source + offset
-        guard browsers.indices.contains(destination) else { return }
+        guard browsers.indices.contains(destination),
+              preferences.hiddenIDs.contains(id) == preferences.hiddenIDs.contains(browsers[destination].id) else { return }
         var reordered = browsers
         reordered.swapAt(source, destination)
         persistOrder(reordered)
@@ -182,9 +184,10 @@ public final class LinkController {
     }
 
     private func persistOrder(_ reordered: [Browser]) {
-        browsers = reordered
-        let present = Set(reordered.map(\.id))
-        preferences.orderedIDs = reordered.map(\.id) + preferences.orderedIDs.filter { !present.contains($0) }
+        browsers = reordered.filter { !preferences.hiddenIDs.contains($0.id) }
+            + reordered.filter { preferences.hiddenIDs.contains($0.id) }
+        let present = Set(browsers.map(\.id))
+        preferences.orderedIDs = browsers.map(\.id) + preferences.orderedIDs.filter { !present.contains($0) }
         store.save(preferences)
     }
 }
