@@ -2,6 +2,15 @@
 
 验证环境：macOS 27.0.1，Apple Silicon，Swift 6.4。应用最低系统版本为 macOS 26.0，两种架构均已检查 Mach-O 的 `minos`。
 
+## Liquid Glass 分层应用图标
+
+- 新增可由 Icon Composer 27 编辑的 `Configuration/LinkPort.icon`。背景使用深灰到黑色的原生渐变，分叉符号保留为独立 SVG 图层，由系统负责圆角遮罩和材质渲染。
+- 符号组启用原生高光、折射及半透明：折射强度 50%、高度 18%、半透明 50%、中性阴影 50%。深色外观指定浅色符号，避免自动取色导致对比度过低。
+- 构建改用 Xcode 27 的 `actool`，生成 `Assets.car` 和兼容的 `LinkPort.icns`，应用通过 `CFBundleIconName = LinkPort` 注册；移除旧的静态 PNG 图标生成脚本。只为构建进程选择已安装的 Xcode，不更改全局开发工具配置。
+- 使用 `assetutil --info` 检查交付包：默认、深色及单色各有两层 `IconImageStack`，包含独立矢量图层以及高光、折射和半透明参数。确认折射高度 0.18、强度 0.5、半透明 0.5 保留在编译资源中。
+- 已在 Icon Composer 的 Design Generation 27 下检查三种外观，并在重启后的应用「关于」页确认新图标显示。导出的 PNG 仅供静态预览，运行时使用分层资源。macOS 26 真机及完整系统动态效果仍按设备验收清单检查。
+- 30 项自动化测试、双架构构建及签名校验通过。显式指定仅有 Command Line Tools 的环境时，构建在组装前报告缺少图标编译器，保留原有产物。
+
 ## SwiftUI 列表拖动落位修复
 
 - 用户反馈可拖起，但松手后顺序不变。独立 SwiftUI `List` 复现时，控制台报告 `Attempting to move ... without a corresponding MoveInteraction`，拖动结束显示 move，但没有调用重排回调。

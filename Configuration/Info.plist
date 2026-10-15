@@ -18,6 +18,8 @@
     <string>1</string>
     <key>CFBundleIconFile</key>
     <string>LinkPort</string>
+    <key>CFBundleIconName</key>
+    <string>LinkPort</string>
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleLocalizations</key>

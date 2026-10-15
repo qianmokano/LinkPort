@@ -6,14 +6,14 @@
 
 ## 构建与安装
 
-需要 macOS 27 SDK、Swift 6.4 或更新的命令行开发工具。可用 `xcode-select --install` 安装工具，无需完整 Xcode。应用仍支持在 macOS 26 及更新系统上运行。
+需要 Xcode 27 或更新版本，包含 macOS 27 SDK、Swift 6.4 和分层图标编译器。应用仍支持在 macOS 26 及更新系统上运行。
 
 ```sh
 ./scripts/build-app.sh
 open dist/LinkPort.app
 ```
 
-脚本分别编译 arm64、x86_64，合并 Universal 二进制，生成图标并进行本机 ad-hoc 签名。最终产物位于 `dist/LinkPort.app`，同时生成便于复制的 `dist/LinkPort.zip`。也可以用 Xcode 打开 `Package.swift` 浏览和编辑源码；注册为默认浏览器时必须运行完整 `.app`，不能只使用 `swift run`。
+脚本分别编译 arm64、x86_64，合并 Universal 二进制，通过 `actool` 编译 Icon Composer 分层图标并进行本机 ad-hoc 签名。最终产物位于 `dist/LinkPort.app`，同时生成便于复制的 `dist/LinkPort.zip`。也可以用 Xcode 打开 `Package.swift` 浏览和编辑源码；注册为默认浏览器时必须运行完整 `.app`，不能只使用 `swift run`。
 
 建议把 `LinkPort.app` 拖至 `/Applications` 或 `~/Applications` 后再启动，在「通用」页点击「设为默认浏览器」并接受 macOS 的确认。应用会检查 HTTP 和 HTTPS 两种处理器状态。也可以在「系统设置 → 桌面与程序坞 → 默认网页浏览器」手动选择 LinkPort。
 
@@ -36,6 +36,8 @@ open dist/LinkPort.app
 
 选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
 
+应用图标源文件为 `Configuration/LinkPort.icon`，可在 Apple Icon Composer 中编辑。深色渐变背景和分叉符号独立保存，系统为符号渲染 Liquid Glass 材质、阴影和高光。构建时生成分层 `Assets.car` 与兼容的 `LinkPort.icns`，并通过 `CFBundleIconName` 注册图标。
+
 设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List + .onMove` 和标准按钮、开关。列表负责原生拖动和落位后保存顺序，轻量适配层将底层表格的插入反馈设为 `.gap`，让系统在拖动中留出空隙、移动其他行。也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
 
 边缘滚动只监听原生拖动来源会话，在拖动期间持续读取指针位置，在列表顶部或底部 48 pt 范围内通过轻量的 `NSScrollView` 适配层连续滚动。列表内容、拖动手势及落点提交仍由 SwiftUI 管理。计时器加入公共运行循环模式，以便在 macOS 原生拖动期间继续工作；离开边缘即停止滚动，松手、结束拖动或关闭页面时销毁计时器。
@@ -57,7 +59,7 @@ open -a "$PWD/dist/LinkPort.app" 'https://example.com/path?x=1&next=%2Fwork#sect
 
 自动化测试使用可替换的系统服务和独立 UserDefaults，覆盖链接校验、队列去重、参数保留、排序隐藏、偏好、取消竞态、打开/复制失败和默认处理器拒绝。
 
-测试脚本在必要时仅为当前进程选择已安装的 `/Applications/Xcode.app`，不会修改全局开发工具配置。如果命令行工具缺少可用的测试模块，需要安装 Xcode 并通过 `DEVELOPER_DIR` 指向它；应用构建本身不需要完整 Xcode。
+构建和测试脚本在必要时仅为当前进程选择已安装的 `/Applications/Xcode.app`，不会修改全局开发工具配置。Xcode 安装在其他位置时，可通过 `DEVELOPER_DIR` 指向它的 Developer 目录；构建分层图标需要完整 Xcode。
 
 UI 与系统集成的人工验证清单及本机构建结果见 [VALIDATION.md](VALIDATION.md)。Intel 构建成功不等同于 Intel 真机运行测试。
 

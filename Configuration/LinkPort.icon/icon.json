@@ -1,0 +1,52 @@
+{
+  "features" : [
+    "refractivity"
+  ],
+  "fill" : {
+    "linear-gradient" : [
+      "extended-srgb:0.45000,0.45000,0.45000,1.00000",
+      "extended-srgb:0.00000,0.00000,0.00000,1.00000"
+    ],
+    "orientation" : {
+      "start" : { "x" : 0.25, "y" : 0 },
+      "stop" : { "x" : 0.75, "y" : 0.85 }
+    }
+  },
+  "groups" : [
+    {
+      "layers" : [
+        {
+          "fill-specializations" : [
+            {
+              "appearance" : "dark",
+              "value" : {
+                "solid" : "extended-srgb:0.95000,0.95000,0.95000,1.00000"
+              }
+            }
+          ],
+          "image-name" : "LinkPort-branch.svg",
+          "name" : "LinkPort-branch"
+        }
+      ],
+      "refractivity" : {
+        "depth" : 0.18,
+        "enabled" : true,
+        "strength" : 0.5
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : true,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "circles" : [
+      "watchOS"
+    ],
+    "squares" : "shared"
+  }
+}

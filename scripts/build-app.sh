@@ -6,6 +6,16 @@ APP_PATH="$PROJECT_ROOT/dist/LinkPort.app"
 STAGING_PATH="$PROJECT_ROOT/.build/LinkPort-staging.app"
 BINARIES=()
 
+# Asset compilation needs Xcode; select it only for this process, like test.sh.
+SELECTED_DEVELOPER="$(xcode-select -p)"
+if [[ -z "${DEVELOPER_DIR:-}" && "$SELECTED_DEVELOPER" == */CommandLineTools && -d /Applications/Xcode.app/Contents/Developer ]]; then
+    export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
+fi
+if ! xcrun --find actool >/dev/null 2>&1; then
+    printf 'Building the Liquid Glass icon requires Xcode 27 or newer. Set DEVELOPER_DIR to its Developer directory.\n' >&2
+    exit 1
+fi
+
 BUILD_SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
 if (( ${BUILD_SDK_VERSION%%.*} < 27 )); then
     printf 'LinkPort requires the macOS 27 SDK. Select newer developer tools with DEVELOPER_DIR.\n' >&2
@@ -29,8 +39,11 @@ lipo -create "${BINARIES[@]}" -output "$STAGING_PATH/Contents/MacOS/LinkPort"
 cp "$PROJECT_ROOT/Configuration/Info.plist" "$STAGING_PATH/Contents/Info.plist"
 cp -R "$PROJECT_ROOT/Sources/LinkPort/Resources/en.lproj" "$STAGING_PATH/Contents/Resources/"
 cp -R "$PROJECT_ROOT/Sources/LinkPort/Resources/zh-Hans.lproj" "$STAGING_PATH/Contents/Resources/"
-swift "$PROJECT_ROOT/scripts/make-icon.swift" "$PROJECT_ROOT/.build/LinkPort.iconset"
-iconutil --convert icns "$PROJECT_ROOT/.build/LinkPort.iconset" --output "$STAGING_PATH/Contents/Resources/LinkPort.icns"
+xcrun actool "$PROJECT_ROOT/Configuration/LinkPort.icon" \
+    --compile "$STAGING_PATH/Contents/Resources" \
+    --platform macosx --target-device mac --minimum-deployment-target 26.0 \
+    --app-icon LinkPort --output-format human-readable-text --notices --warnings \
+    --output-partial-info-plist "$PROJECT_ROOT/.build/LinkPort-icon-info.plist"
 plutil -lint "$STAGING_PATH/Contents/Info.plist"
 codesign --force --sign - "$STAGING_PATH"
 codesign --verify --strict "$STAGING_PATH"
