@@ -134,8 +134,6 @@ struct SettingsView: View {
                         .buttonStyle(.borderedProminent).disabled(model.isSettingDefault)
                 }
             }
-            LabeledContent("HTTP") { handlerStatus(model.handlers.http == model.bundleID) }
-            LabeledContent("HTTPS") { handlerStatus(model.handlers.https == model.bundleID) }
         } footer: {
             Text(L10n.text("default.manual")).textSelection(.enabled)
         }
@@ -216,9 +214,4 @@ struct SettingsView: View {
         }
     }
 
-    private func handlerStatus(_ handled: Bool) -> some View {
-        Label(L10n.text(handled ? "status.enabled" : "status.notEnabled"),
-              systemImage: handled ? "checkmark.circle" : "minus.circle")
-            .foregroundStyle(.secondary)
-    }
 }

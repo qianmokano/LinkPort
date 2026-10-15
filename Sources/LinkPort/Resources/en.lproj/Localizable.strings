@@ -7,8 +7,6 @@
 "status.notDefault" = "Set up your default browser";
 "status.default.short" = "LinkPort";
 "status.notDefault.short" = "Not configured";
-"status.enabled" = "Enabled";
-"status.notEnabled" = "Not enabled";
 "default.browser" = "Default browser";
 "default.make" = "Set as Default Browser";
 "default.description" = "Links from other apps arrive here first. Choose a browser, or just copy the address.";

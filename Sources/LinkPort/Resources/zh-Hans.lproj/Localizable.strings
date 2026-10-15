@@ -7,8 +7,6 @@
 "status.notDefault" = "设置默认浏览器";
 "status.default.short" = "LinkPort";
 "status.notDefault.short" = "尚未设置";
-"status.enabled" = "已启用";
-"status.notEnabled" = "未启用";
 "default.browser" = "默认浏览器";
 "default.make" = "设为默认浏览器";
 "default.description" = "其他应用打开的链接会先来到这里。选择浏览器，或只复制网址。";
