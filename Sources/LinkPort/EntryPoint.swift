@@ -27,6 +27,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var lastLinkReceipt = Date.distantPast
     private var launchCompleted = false
     private var refreshObserver: NSObjectProtocol?
+    private let presentWindow: @MainActor (NSWindow) -> Void
+
+    init(model: LinkController? = nil, presentWindow: @escaping @MainActor (NSWindow) -> Void = { window in
+        NSApp.unhide(nil)
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate()
+        // Activation is asynchronous; still reveal the explicitly requested window.
+        window.orderFrontRegardless()
+    }) {
+        self.presentWindow = presentWindow
+        super.init()
+        if let model { self.model = model }
+    }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         L10n.setLanguage(model.preferences.language)
@@ -83,7 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if let refreshObserver { NSWorkspace.shared.notificationCenter.removeObserver(refreshObserver) }
     }
 
-    func menuWillOpen(_ menu: NSMenu) {
+    func menuNeedsUpdate(_ menu: NSMenu) {
         model.refresh()
         menu.removeAllItems()
         let state = NSMenuItem(title: L10n.text(model.isDefault ? "status.default" : "status.notDefault"), action: nil, keyEquivalent: "")
@@ -123,10 +136,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         NSApp.mainMenu = main
     }
 
-    @objc private func openSettings() { showSettings() }
+    @objc private func openSettings() {
+        // Let menu tracking and its focus restoration finish before presenting.
+        RunLoop.main.perform(inModes: [.default]) { [weak self] in
+            MainActor.assumeIsolated { self?.showSettings() }
+        }
+    }
     @objc private func quit() { NSApp.terminate(nil) }
     @objc private func makeDefault() {
-        showSettings()
+        openSettings()
         Task { await model.makeDefault() }
     }
     @objc private func previewPicker() {
@@ -143,7 +161,6 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     }
 
     private func showSettings() {
-        if model.isOpening { return }
         if model.queue.current != nil { picker.cancel() }
         model.refresh()
         if settingsWindow == nil {
@@ -152,6 +169,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             window.title = L10n.text("settings.general")
             window.toolbarStyle = .preference
             window.isReleasedWhenClosed = false
+            window.collectionBehavior = [.moveToActiveSpace, .fullScreenAuxiliary]
             window.contentViewController = SettingsTabController(
                 model: model,
                 preview: { [weak self] in self?.previewPicker() },
@@ -161,7 +179,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             window.center()
             settingsWindow = window
         }
-        NSApp.activate()
-        settingsWindow?.makeKeyAndOrderFront(nil)
+        guard let window = settingsWindow else { return }
+        presentWindow(window)
     }
 }

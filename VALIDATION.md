@@ -2,6 +2,17 @@
 
 验证环境：macOS 27.0.1，Apple Silicon，Swift 6.4。应用最低系统版本为 macOS 26.0，两种架构均已检查 Mach-O 的 `minos`。
 
+## 菜单栏设置响应修复
+
+- 原实现在 `menuWillOpen` 中删除并重建菜单项，违反该回调的 AppKit 约定；改为在允许修改菜单结构的 `menuNeedsUpdate` 中刷新。
+- 「设置」操作排入主运行循环的默认模式，等菜单跟踪及焦点恢复结束后再显示窗口。显示时取消隐藏、设为键窗口、请求激活并置前，处理应用激活尚未完成的情况；窗口保持普通层级，并配置为移到当前桌面及允许全屏辅助显示。
+- 移除转交链接期间直接忽略设置请求的分支。主动打开设置会取消选择卡片及其待处理操作，已有操作令牌继续阻止旧异步完成回调清除后续新链接。
+- 新增 `LinkPortTests` 的 4 项 AppKit 回归测试：通过菜单委托更新菜单及默认状态、一次选择后异步显示并重用关闭的窗口、取消待处理卡片、转交过程中打开设置及旧完成回调隔离。浏览器服务、偏好存储和窗口展示使用替身，不操作真实浏览器、默认处理器或焦点。
+- 34 项自动化测试、Universal 构建及签名校验通过。核心逻辑覆盖率保持行 99.33%、函数 97.65%、区域 97.25%。
+- 已在重启后的实际应用菜单中选择一次「设置」，确认窗口显示并获得焦点。原菜单栏偶发现象未稳定复现；真实状态栏连续点击、跨桌面和全屏应用场景仍需实际试用，未将其标记为实测通过。
+
+API 依据：[menuWillOpen](https://developer.apple.com/documentation/appkit/nsmenudelegate/menuwillopen(_:))、[menuNeedsUpdate](https://developer.apple.com/documentation/appkit/nsmenudelegate/menuneedsupdate(_:))、[activate](https://developer.apple.com/documentation/appkit/nsapplication/activate())。
+
 ## Liquid Glass 分层应用图标
 
 - 新增可由 Icon Composer 27 编辑的 `Configuration/LinkPort.icon`。背景使用深灰到黑色的原生渐变，分叉符号保留为独立 SVG 图层，由系统负责圆角遮罩和材质渲染。
@@ -73,7 +84,7 @@
 
 ## 自动化测试
 
-`./scripts/test.sh` 运行 Swift Testing：30 项测试，包含参数化场景。全部通过。
+`./scripts/test.sh` 运行 Swift Testing：34 项测试，包含参数化场景。全部通过。
 
 `LinkPortCore` 的 LLVM 覆盖率：
 
@@ -83,7 +94,7 @@
 | 函数覆盖率 | 97.65%（83 / 85） |
 | 区域覆盖率 | 97.25%（177 / 182） |
 
-覆盖率仅指核心逻辑，不包含 AppKit/SwiftUI 界面和系统适配器。测试使用 mock，不更改系统默认浏览器，也不打开真实网页或写入真实剪贴板。
+覆盖率仅指核心逻辑，不包含 AppKit/SwiftUI 界面和系统适配器。另有 4 项 AppKit 菜单与设置流程回归测试。测试使用 mock，不更改系统默认浏览器，也不打开真实网页或写入真实剪贴板。
 
 已覆盖：
 

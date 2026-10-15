@@ -14,5 +14,6 @@ let package = Package(
             resources: [.process("Resources")]
         ),
         .testTarget(name: "LinkPortCoreTests", dependencies: ["LinkPortCore"]),
+        .testTarget(name: "LinkPortTests", dependencies: ["LinkPort", "LinkPortCore"]),
     ]
 )

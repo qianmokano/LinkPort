@@ -57,7 +57,7 @@ codesign --verify --strict dist/LinkPort.app
 open -a "$PWD/dist/LinkPort.app" 'https://example.com/path?x=1&next=%2Fwork#section'
 ```
 
-自动化测试使用可替换的系统服务和独立 UserDefaults，覆盖链接校验、队列去重、参数保留、排序隐藏、偏好、取消竞态、打开/复制失败和默认处理器拒绝。
+自动化测试使用可替换的系统服务和独立 UserDefaults，覆盖链接校验、队列去重、参数保留、排序隐藏、偏好、取消竞态、打开/复制失败和默认处理器拒绝。AppKit 回归测试另行覆盖菜单更新和设置展示时序，窗口展示使用替身，不改变真实焦点。
 
 构建和测试脚本在必要时仅为当前进程选择已安装的 `/Applications/Xcode.app`，不会修改全局开发工具配置。Xcode 安装在其他位置时，可通过 `DEVELOPER_DIR` 指向它的 Developer 目录；构建分层图标需要完整 Xcode。
 
