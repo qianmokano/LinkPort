@@ -6,6 +6,12 @@ APP_PATH="$PROJECT_ROOT/dist/LinkPort.app"
 STAGING_PATH="$PROJECT_ROOT/.build/LinkPort-staging.app"
 BINARIES=()
 
+BUILD_SDK_VERSION="$(xcrun --sdk macosx --show-sdk-version)"
+if (( ${BUILD_SDK_VERSION%%.*} < 27 )); then
+    printf 'LinkPort requires the macOS 27 SDK. Select newer developer tools with DEVELOPER_DIR.\n' >&2
+    exit 1
+fi
+
 for ARCH in arm64 x86_64; do
     swift build --package-path "$PROJECT_ROOT" --build-system native \
         --configuration release --triple "$ARCH-apple-macosx26.0" \
@@ -17,7 +23,7 @@ for ARCH in arm64 x86_64; do
 done
 
 # Assemble in staging so a failed build never damages an existing app.
-rm -rf "$STAGING_PATH"
+if [[ -e "$STAGING_PATH" ]]; then rm -r "$STAGING_PATH"; fi
 mkdir -p "$STAGING_PATH/Contents/MacOS" "$STAGING_PATH/Contents/Resources"
 lipo -create "${BINARIES[@]}" -output "$STAGING_PATH/Contents/MacOS/LinkPort"
 cp "$PROJECT_ROOT/Configuration/Info.plist" "$STAGING_PATH/Contents/Info.plist"
@@ -33,10 +39,15 @@ for ARCH in arm64 x86_64; do
 done
 mkdir -p "$PROJECT_ROOT/dist"
 if [[ -e "$APP_PATH" ]]; then
-    rm -rf "$PROJECT_ROOT/.build/LinkPort-previous.app"
+    if [[ -e "$PROJECT_ROOT/.build/LinkPort-previous.app" ]]; then
+        rm -r "$PROJECT_ROOT/.build/LinkPort-previous.app"
+    fi
     mv "$APP_PATH" "$PROJECT_ROOT/.build/LinkPort-previous.app"
 fi
 mv "$STAGING_PATH" "$APP_PATH"
 ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$PROJECT_ROOT/.build/LinkPort.zip"
 mv -f "$PROJECT_ROOT/.build/LinkPort.zip" "$PROJECT_ROOT/dist/LinkPort.zip"
+if [[ -e "$PROJECT_ROOT/.build/LinkPort-previous.app" ]]; then
+    rm -r "$PROJECT_ROOT/.build/LinkPort-previous.app"
+fi
 printf 'Built: %s\n' "$APP_PATH"

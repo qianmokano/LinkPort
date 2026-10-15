@@ -6,7 +6,7 @@
 
 ## 构建与安装
 
-需要 macOS 26 SDK、Swift 6.2 或更新的命令行开发工具。可用 `xcode-select --install` 安装工具，无需完整 Xcode。
+需要 macOS 27 SDK、Swift 6.4 或更新的命令行开发工具。可用 `xcode-select --install` 安装工具，无需完整 Xcode。应用仍支持在 macOS 26 及更新系统上运行。
 
 ```sh
 ./scripts/build-app.sh
@@ -30,6 +30,14 @@ open dist/LinkPort.app
 - 双击应用会打开设置。关闭设置窗口后菜单栏仍保留；退出后，下一次系统交来链接时应用会自动启动。不自动配置登录启动。
 
 卡片支持多屏幕定位、浅色/深色外观、键盘导航及辅助功能标签。界面跟随系统显示简体中文或英文，其他语言回退至英文。
+
+## macOS 27 设计
+
+选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
+
+设置窗口使用 `NSTabViewController` 的工具栏分页、SwiftUI 分组 `Form`、`LabeledContent`、标准开关及 `ControlGroup`。字体、强调色、滚动边缘、工具栏选中状态均使用系统组件；设置页标题跟随当前分页，窗口采用原生偏好设置样式。
+
+实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)。
 
 ## 恢复默认浏览器与卸载
 

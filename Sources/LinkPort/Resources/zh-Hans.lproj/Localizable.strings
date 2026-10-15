@@ -5,6 +5,11 @@
 "menu.selectAll" = "全选";
 "status.default" = "LinkPort 已是默认浏览器";
 "status.notDefault" = "设置默认浏览器";
+"status.default.short" = "LinkPort";
+"status.notDefault.short" = "尚未设置";
+"status.enabled" = "已启用";
+"status.notEnabled" = "未启用";
+"default.browser" = "默认浏览器";
 "default.make" = "设为默认浏览器";
 "default.description" = "其他应用打开的链接会先来到这里。选择浏览器，或只复制网址。";
 "default.manual" = "也可以前往「系统设置 → 桌面与程序坞 → 默认网页浏览器」选择 LinkPort。";
@@ -29,6 +34,7 @@
 "picker.try" = "试试看";
 "picker.preview.description" = "用示例链接体验，无需更改默认浏览器。选中浏览器前不会打开网页。";
 "shortcut.choose" = "选择浏览器";
+"shortcut.title" = "键盘快捷键";
 "shortcut.navigate" = "移动并打开";
 "shortcut.copy" = "复制完整网址";
 "shortcut.cancel" = "关闭卡片，不打开链接";
@@ -49,6 +55,8 @@
 "browsers.showNamed" = "在卡片中显示 %@";
 "browsers.hideNamed" = "从卡片中隐藏 %@";
 "about.version" = "版本 %@";
+"about.compatibility" = "系统要求";
+"about.architectures" = "支持的处理器";
 "about.privacy.title" = "链接始终由你掌握";
 "about.privacy.body" = "LinkPort 不收集数据、不连接服务器、不保存浏览历史。仅在这台 Mac 保存浏览器顺序、显示状态和欢迎提示偏好。网址只在内存中保留，处理或取消后即移除。";
 "about.scope" = "LinkPort 处理系统交给默认浏览器的 HTTP 和 HTTPS 链接。应用内置网页，以及明确指定其他浏览器的链接，仍由相应应用处理。";

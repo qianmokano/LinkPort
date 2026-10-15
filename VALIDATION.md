@@ -2,6 +2,18 @@
 
 验证环境：macOS 27.0.1，Apple Silicon，Swift 6.4。应用最低系统版本为 macOS 26.0，两种架构均已检查 Mach-O 的 `minos`。
 
+## macOS 27 界面升级
+
+- 选择卡片使用原生 `NSGlassEffectView`，macOS 27 启用 `effectIsInteractive`，macOS 26 保留标准玻璃材质。移除了自绘的磨砂背景和边框。
+- 设置窗口改用 `NSTabViewController.TabStyle.toolbar` 及原生偏好设置工具栏；分页切换会更新窗口标题，缩放和最小化遵循设置窗口规范。
+- 内容改用 SwiftUI 分组 `Form`、`LabeledContent`、标准开关及 `ControlGroup`；字体和强调色跟随系统。
+- 在实机检查了「通用」「浏览器」分页的布局、标题和原生控件，以及玻璃选择卡片；验证浏览器开关可隐藏并恢复，随后恢复了原有显示状态。
+- 界面更新后 18 项自动化测试全部通过；两个架构均使用 macOS 27 SDK 编译。
+- 构建脚本在成功打包后清理旧的临时应用，避免系统同时识别多个 LinkPort 副本。
+- 深色模式、完整 VoiceOver 和 macOS 26 真机仍按下方清单进行后续验收。
+
+设计依据：[Apple 设置规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)。
+
 ## 自动化测试
 
 `./scripts/test.sh` 运行 Swift Testing：18 项测试，包含参数化场景。全部通过。

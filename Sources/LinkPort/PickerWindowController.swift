@@ -35,7 +35,7 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
             let screen = NSScreen.screens.first { $0.frame.contains(pointer) } ?? NSScreen.main
             let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
             let rows = min(max(Int(ceil(Double(model.visibleBrowsers.count) / 5.0)), 1), 2)
-            let height = CGFloat(230 + rows * 98)
+            let height = CGFloat(224 + rows * 112)
             panel.setFrame(PickerGeometry.frame(size: CGSize(width: 474, height: height), pointer: pointer, visibleFrame: visible), display: true)
         }
         NSApp.activate()
@@ -70,13 +70,19 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         panel.delegate = self
         panel.isMovableByWindowBackground = true
         panel.handleKey = { [weak self] event in self?.handleKey(event) ?? false }
-        panel.contentView = NSHostingView(rootView: PickerView(
+        let content = NSHostingView(rootView: PickerView(
             model: model,
             open: { [weak self] id in self?.open(id) },
             copy: { [weak self] in self?.copyLink() },
             cancel: { [weak self] in self?.cancel() },
             settings: { [weak self] in self?.cancel(); self?.openSettings() }
         ))
+        let glass = NSGlassEffectView()
+        glass.style = .regular
+        glass.cornerRadius = 26
+        if #available(macOS 27.0, *) { glass.effectIsInteractive = true }
+        glass.contentView = content
+        panel.contentView = glass
         self.panel = panel
     }
 

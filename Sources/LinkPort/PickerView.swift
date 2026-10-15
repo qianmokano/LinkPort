@@ -35,23 +35,25 @@ struct PickerView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: 7) {
-                Image(systemName: "arrow.triangle.branch").foregroundStyle(.teal)
+                Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 20, height: 20)
+                    .accessibilityHidden(true)
                 Text("LinkPort").fontWeight(.semibold)
                 Spacer()
                 if model.queue.count > 1 {
                     Text(L10n.format("picker.pending", model.queue.count))
                         .font(.caption).foregroundStyle(.secondary)
                 }
-                Button(action: cancel) { Image(systemName: "xmark").font(.caption.weight(.semibold)) }
-                    .buttonStyle(.plain).foregroundStyle(.secondary)
+                Button(action: cancel) { Image(systemName: "xmark").font(.callout.weight(.medium)) }
+                    .buttonStyle(.borderless).foregroundStyle(.secondary)
+                    .buttonBorderShape(.circle)
                     .accessibilityLabel(L10n.text("picker.cancel"))
             }
-            .font(.callout).padding(.bottom, 18)
+            .font(.callout).padding(.bottom, 16)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(L10n.text("picker.title")).font(.system(size: 22, weight: .semibold, design: .rounded))
+                Text(L10n.text("picker.title")).font(.title2.weight(.semibold))
                 HStack(spacing: 7) {
-                    Image(systemName: "link").foregroundStyle(.teal)
+                    Image(systemName: "link").foregroundStyle(.secondary)
                     Text(model.queue.current?.host ?? "").fontWeight(.medium).lineLimit(1)
                 }.font(.callout)
                 Text(model.queue.current?.absoluteString ?? "")
@@ -77,15 +79,16 @@ struct PickerView: View {
                         }.padding(2)
                     }
                 }
-                .scrollIndicators(.hidden)
+                .scrollIndicators(.automatic)
                 .defaultScrollAnchor(.top)
+                .scrollEdgeEffectStyle(.soft, for: .vertical)
                 .onChange(of: model.selectedID) { _, id in
                     if let id { proxy.scrollTo(id, anchor: .center) }
                 }
             }
             .overlay {
                 if model.isOpening {
-                    ProgressView().controlSize(.small).padding(14).background(.regularMaterial, in: Circle())
+                    ProgressView().controlSize(.regular).padding(14).background(.background, in: Circle())
                 }
             }
 
@@ -100,29 +103,27 @@ struct PickerView: View {
                 .buttonStyle(.bordered).controlSize(.regular).disabled(model.isOpening)
                 Spacer()
                 Button(action: settings) { Image(systemName: "slider.horizontal.3") }
-                    .buttonStyle(.plain).font(.system(size: 16)).foregroundStyle(.secondary)
+                    .buttonStyle(.borderless).font(.body).foregroundStyle(.secondary)
                     .help(L10n.text("settings.title")).accessibilityLabel(L10n.text("settings.title"))
             }
         }
         .padding(20)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22))
-        .overlay(RoundedRectangle(cornerRadius: 22).strokeBorder(.primary.opacity(0.08)))
-        .tint(.teal)
     }
 
     private func browserButton(_ browser: Browser, index: Int) -> some View {
         let selected = model.selectedID == browser.id
         return Button { open(browser.id) } label: {
             VStack(spacing: 4) {
-                BrowserIcon(browser: browser)
-                Text(browser.name).font(.system(size: 11, weight: .medium)).lineLimit(1)
+                BrowserIcon(browser: browser, size: 48)
+                Text(browser.name).font(.caption).lineLimit(2).multilineTextAlignment(.center)
+                    .frame(height: 30, alignment: .top)
                 Text(index < 9 ? "⌘\(index + 1)" : " ")
                     .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity).padding(.vertical, 8)
-            .background(selected ? Color.teal.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 12))
-            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(selected ? .teal.opacity(0.55) : .clear))
-            .contentShape(RoundedRectangle(cornerRadius: 12))
+            .background(selected ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 2))
+            .contentShape(RoundedRectangle(cornerRadius: 16))
         }
         .buttonStyle(.plain).disabled(model.isOpening)
         .accessibilityLabel(L10n.format("picker.openIn", browser.name))

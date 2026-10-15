@@ -5,6 +5,11 @@
 "menu.selectAll" = "Select All";
 "status.default" = "LinkPort is your default browser";
 "status.notDefault" = "Set up your default browser";
+"status.default.short" = "LinkPort";
+"status.notDefault.short" = "Not configured";
+"status.enabled" = "Enabled";
+"status.notEnabled" = "Not enabled";
+"default.browser" = "Default browser";
 "default.make" = "Set as Default Browser";
 "default.description" = "Links from other apps arrive here first. Choose a browser, or just copy the address.";
 "default.manual" = "You can also choose LinkPort in System Settings → Desktop & Dock → Default web browser.";
@@ -29,6 +34,7 @@
 "picker.try" = "Try It";
 "picker.preview.description" = "Try an example link without changing your default browser. Nothing opens until you choose a browser.";
 "shortcut.choose" = "Choose a browser";
+"shortcut.title" = "Keyboard Shortcuts";
 "shortcut.navigate" = "Move and open";
 "shortcut.copy" = "Copy the complete URL";
 "shortcut.cancel" = "Dismiss without opening";
@@ -49,6 +55,8 @@
 "browsers.showNamed" = "Show %@ in picker";
 "browsers.hideNamed" = "Hide %@ from picker";
 "about.version" = "Version %@";
+"about.compatibility" = "System requirement";
+"about.architectures" = "Supported processors";
 "about.privacy.title" = "Your links stay yours";
 "about.privacy.body" = "LinkPort does not collect data, contact servers, or save browsing history. Only browser order, visibility, and the welcome preference are stored on this Mac. URLs are held in memory until handled or dismissed.";
 "about.scope" = "LinkPort handles HTTP and HTTPS links sent to the system default browser. Embedded web views and links explicitly sent to another browser stay with that app.";

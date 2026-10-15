@@ -139,13 +139,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         if model.queue.current != nil { picker.cancel() }
         model.refresh()
         if settingsWindow == nil {
-            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 580),
-                                  styleMask: [.titled, .closable, .miniaturizable, .resizable], backing: .buffered, defer: false)
-            window.title = "LinkPort"
-            window.titlebarAppearsTransparent = true
+            let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 640, height: 600),
+                                  styleMask: [.titled, .closable], backing: .buffered, defer: false)
+            window.title = L10n.text("settings.general")
+            window.toolbarStyle = .preference
             window.isReleasedWhenClosed = false
-            window.minSize = NSSize(width: 740, height: 540)
-            window.contentView = NSHostingView(rootView: SettingsView(model: model, preview: { [weak self] in self?.previewPicker() }))
+            window.contentViewController = SettingsTabController(model: model, preview: { [weak self] in self?.previewPicker() })
+            window.setContentSize(NSSize(width: 640, height: 600))
             window.center()
             settingsWindow = window
         }
