@@ -102,7 +102,15 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         glass.cornerRadius = 26
         if #available(macOS 27.0, *) { glass.effectIsInteractive = true }
         glass.contentView = content
-        panel.contentView = glass
+        // Match the window's alpha shape to the glass instead of shadowing its rectangular backing.
+        let surface = NSView()
+        surface.wantsLayer = true
+        surface.layer?.cornerRadius = glass.cornerRadius
+        surface.layer?.masksToBounds = true
+        glass.frame = surface.bounds
+        glass.autoresizingMask = [.width, .height]
+        surface.addSubview(glass)
+        panel.contentView = surface
         self.panel = panel
     }
 
