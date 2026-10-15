@@ -104,8 +104,7 @@ struct PickerView: View {
                     .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
             }
             .frame(maxWidth: .infinity).padding(.vertical, 8)
-            .background(selected ? Color.accentColor.opacity(0.12) : .clear, in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(selected ? Color.accentColor : .clear, lineWidth: 2))
+            .background(selected ? Color.gray.opacity(0.18) : .clear, in: RoundedRectangle(cornerRadius: 16))
             .contentShape(RoundedRectangle(cornerRadius: 16))
         }
         .buttonStyle(.plain).disabled(model.isOpening)
