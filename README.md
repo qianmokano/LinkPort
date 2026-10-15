@@ -36,9 +36,9 @@ open dist/LinkPort.app
 
 选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
 
-设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List + .onMove` 和标准按钮、开关。长按一行后拖动，系统处理行让位及插入位置反馈，排序保存到本机。列表支持多选和方向键选择，也可以通过行内箭头按钮调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。
+设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List` 和标准按钮、开关。macOS 27 使用 `reorderable + reorderContainer`，按系统重排接口提供拖动中的占位空隙及行让位；macOS 26 保留 `.onMove` 兼容路径。松手后按浏览器 ID 保存新顺序，也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
 
-实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[SwiftUI 列表重排](https://developer.apple.com/documentation/swiftui/making-a-view-into-a-drag-source)。
+实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[SwiftUI 原生占位重排](https://developer.apple.com/documentation/swiftui/reordering-items-in-lists-stacks-grids-and-custom-layouts)。
 
 ## 恢复默认浏览器与卸载
 

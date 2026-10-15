@@ -225,6 +225,50 @@ func browserRowsMoveToInsertionOffsets(_ scenario: (source: [Int], destination: 
     #expect(LinkController(bundleID: ownID, system: system, store: store).browsers.map(\.id) == scenario.expected)
 }
 
+@Test(arguments: [
+    (source: ["a"], before: Optional("c"), expected: ["b", "a", "c", "d"]),
+    (source: ["d"], before: Optional("a"), expected: ["d", "a", "b", "c"]),
+    (source: ["a"], before: nil, expected: ["b", "c", "d", "a"]),
+    (source: ["c", "a"], before: Optional("d"), expected: ["b", "c", "a", "d"]),
+    (source: ["b", "c"], before: nil, expected: ["a", "d", "b", "c"]),
+    (source: ["b"], before: Optional("c"), expected: ["a", "b", "c", "d"]),
+    (source: ["a"], before: Optional("a"), expected: ["a", "b", "c", "d"]),
+    (source: [], before: Optional("a"), expected: ["a", "b", "c", "d"]),
+    (source: ["missing"], before: nil, expected: ["a", "b", "c", "d"]),
+    (source: ["a", "a"], before: nil, expected: ["a", "b", "c", "d"]),
+    (source: ["a"], before: Optional("missing"), expected: ["a", "b", "c", "d"]),
+]) @MainActor
+func browserRowsMoveByStableIdentifiers(_ scenario: (source: [String], before: String?, expected: [String])) {
+    let system = FakeSystem()
+    system.browsers = ["a", "b", "c", "d"].map { browser($0) }
+    let store = MemoryStore(BrowserPreferences(
+        orderedIDs: ["a", "b", "c", "d", "missing"], hiddenIDs: ["b"],
+        hasSeenWelcome: true, language: .simplifiedChinese
+    ))
+    let model = LinkController(bundleID: ownID, system: system, store: store)
+    model.receive([url()])
+    model.select("c")
+    model.moveBrowsers(withIDs: scenario.source, before: scenario.before)
+    #expect(model.browsers.map(\.id) == scenario.expected)
+    #expect(store.value.orderedIDs == scenario.expected + ["missing"])
+    #expect(store.value.hiddenIDs == ["b"])
+    #expect(store.value.language == .simplifiedChinese)
+    #expect(store.value.hasSeenWelcome)
+    #expect(model.selectedID == "c")
+    #expect(model.queue.current == url())
+    #expect(LinkController(bundleID: ownID, system: system, store: store).browsers.map(\.id) == scenario.expected)
+}
+
+@Test @MainActor func identifierMoveUsesCurrentOrderAfterRefresh() {
+    let (model, system, store) = fixture(BrowserPreferences(orderedIDs: ["chrome", "safari"]))
+    system.browsers.append(browser("new"))
+    model.refresh()
+    model.moveBrowser("safari", by: -1)
+    model.moveBrowsers(withIDs: ["chrome"], before: nil)
+    #expect(model.browsers.map(\.id) == ["safari", "new", "chrome"])
+    #expect(store.value.orderedIDs == ["safari", "new", "chrome"])
+}
+
 @Test @MainActor func copyPreservesFullURLWithoutLaunchingBrowser() {
     let (model, system, _) = fixture()
     model.receive([url(), url("http://example.org/next")])

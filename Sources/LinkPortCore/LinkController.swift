@@ -86,6 +86,25 @@ public final class LinkController {
         persistOrder(reordered)
     }
 
+    public func moveBrowsers(withIDs source: [String], before destinationID: String?) {
+        let sourceIDs = Set(source)
+        guard !source.isEmpty, sourceIDs.count == source.count else { return }
+        let byID = Dictionary(uniqueKeysWithValues: browsers.map { ($0.id, $0) })
+        let moving = source.compactMap { byID[$0] }
+        guard moving.count == source.count else { return }
+        var reordered = browsers.filter { !sourceIDs.contains($0.id) }
+        let insertion: Int
+        if let destinationID {
+            guard let index = reordered.firstIndex(where: { $0.id == destinationID }) else { return }
+            insertion = index
+        } else {
+            insertion = reordered.endIndex
+        }
+        reordered.insert(contentsOf: moving, at: insertion)
+        guard reordered != browsers else { return }
+        persistOrder(reordered)
+    }
+
     public func finishWelcome() {
         preferences.hasSeenWelcome = true
         store.save(preferences)

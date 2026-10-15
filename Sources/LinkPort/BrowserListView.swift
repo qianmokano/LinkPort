@@ -8,17 +8,34 @@ struct BrowserListView: View {
     let browsers: [Browser]
     let hiddenIDs: Set<String>
     let move: (IndexSet, Int) -> Void
+    let moveBefore: ([String], String?) -> Void
     let moveBy: (String, Int) -> Void
     let setHidden: (String, Bool) -> Void
     @BrowserSelectionState private var selection: Set<String> = []
 
     var body: some View {
-        List(selection: $selection) {
-            ForEach(browsers) { browser in
-                browserRow(browser)
-                    .tag(browser.id)
+        Group {
+            if #available(macOS 27, *) {
+                List(selection: $selection) {
+                    ForEach(browsers) { browser in
+                        browserRow(browser).tag(browser.id)
+                    }
+                    .reorderable()
+                }
+                .reorderContainer(for: Browser.self) { difference in
+                    switch difference.destination.position {
+                    case .before(let id): moveBefore(difference.sources, id)
+                    case .end: moveBefore(difference.sources, nil)
+                    }
+                }
+            } else {
+                List(selection: $selection) {
+                    ForEach(browsers) { browser in
+                        browserRow(browser).tag(browser.id)
+                    }
+                    .onMove(perform: move)
+                }
             }
-            .onMove(perform: move)
         }
         .listStyle(.inset)
         .scrollContentBackground(.hidden)
@@ -62,7 +79,6 @@ struct BrowserListView: View {
         }
         .padding(.vertical, 6)
         .contentShape(Rectangle())
-        .accessibilityElement(children: .contain)
         .accessibilityActions {
             if browser.id != browsers.first?.id {
                 Button(L10n.format("browsers.moveUpNamed", browser.name)) { moveBy(browser.id, -1) }
