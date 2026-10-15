@@ -51,8 +51,10 @@ struct PickerView: View {
                         .accessibilityLabel(L10n.text("picker.cancel"))
                 }
                 HStack(spacing: 7) {
-                    Image(systemName: "link").foregroundStyle(.secondary)
-                    Text(model.queue.current?.host ?? "").fontWeight(.medium).lineLimit(1)
+                    Image(systemName: model.queue.current?.isFileURL == true ? "doc.richtext" : "link")
+                        .foregroundStyle(.secondary)
+                    Text(model.queue.current.map { $0.isFileURL ? $0.lastPathComponent : ($0.host ?? "") } ?? "")
+                        .fontWeight(.medium).lineLimit(1)
                 }.font(.callout)
                 Text(model.queue.current?.absoluteString ?? "")
                     .font(.caption).foregroundStyle(.secondary).lineLimit(1).truncationMode(.middle)

@@ -2,6 +2,16 @@
 
 验证环境：macOS 27.0.1，Apple Silicon，Swift 6.4。应用最低系统版本为 macOS 26.0，两种架构均已检查 Mach-O 的 `minos`。
 
+## 默认浏览器候选列表修复
+
+- 修复前，系统实际查询的 HTTP、HTTPS 及 HTML 默认处理器均为 LinkPort，路径为 `/Applications/LinkPort.app`；系统设置的列表中却没有 LinkPort，当前值显示为 Safari。应用内状态判断与实际处理器一致，问题在系统设置的候选识别。
+- 以同一应用包制作两个独立标识的临时副本：仅增加网页接续声明的副本未出现在列表；仅增加 HTML/XHTML 文档类型声明的副本在重新进入设置页后出现。验证未选择任何测试副本为默认浏览器；随后已注销并移除全部临时副本。
+- 正式包补充 `CFBundleDocumentTypes`，以 Viewer 身份声明 `public.html` 和 `public.xhtml`，构建号更新为 2。声明参考 [Apple Launch Services](https://developer.apple.com/library/archive/documentation/Carbon/Conceptual/LaunchServicesConcepts/LSCConcepts/LSCConcepts.html) 与 [Finicky 的应用元数据](https://github.com/johnste/finicky/blob/main/apps/finicky/assets/Info.plist)。
+- 对应支持本地 `.html`、`.htm`、`.xhtml`、`.xht` 文件，保留完整文件网址、查询和片段，并使用现有打开、复制及队列流程。拒绝远程文件主机、目录和其他文件类型。文件选择卡片显示文件名，更新中英范围说明。
+- 已更新并校验 `/Applications/LinkPort.app`，重新注册该包后刷新设置页。实机确认候选列表包含 LinkPort，当前值显示 LinkPort；全程没有重新请求更改默认浏览器，HTTP/HTTPS 及 HTML 默认处理器仍指向已安装的 LinkPort。
+- 使用系统默认打开操作投递本地 HTML 文件，实际显示带文件名的选择卡片；HTTP 和 HTTPS 示例同时投递后显示两项队列。测试均已取消，未选择浏览器打开测试内容。
+- 新增打包声明、合法本地网页、打开及复制回归测试，并增加无效文件网址场景。37 项自动化测试、双架构构建、元数据语法及签名校验通过；核心逻辑行覆盖率 99.35%。
+
 ## 菜单栏设置响应修复
 
 - 原实现在 `menuWillOpen` 中删除并重建菜单项，违反该回调的 AppKit 约定；改为在允许修改菜单结构的 `menuNeedsUpdate` 中刷新。
@@ -84,21 +94,21 @@ API 依据：[menuWillOpen](https://developer.apple.com/documentation/appkit/nsm
 
 ## 自动化测试
 
-`./scripts/test.sh` 运行 Swift Testing：34 项测试，包含参数化场景。全部通过。
+`./scripts/test.sh` 运行 Swift Testing：37 项测试，包含参数化场景。全部通过。
 
 `LinkPortCore` 的 LLVM 覆盖率：
 
 | 指标 | 结果 |
 | --- | --- |
-| 行覆盖率 | 99.33%（296 / 298） |
-| 函数覆盖率 | 97.65%（83 / 85） |
-| 区域覆盖率 | 97.25%（177 / 182） |
+| 行覆盖率 | 99.35%（306 / 308） |
+| 函数覆盖率 | 97.83%（90 / 92） |
+| 区域覆盖率 | 97.35%（184 / 189） |
 
-覆盖率仅指核心逻辑，不包含 AppKit/SwiftUI 界面和系统适配器。另有 4 项 AppKit 菜单与设置流程回归测试。测试使用 mock，不更改系统默认浏览器，也不打开真实网页或写入真实剪贴板。
+覆盖率仅指核心逻辑，不包含 AppKit/SwiftUI 界面和系统适配器。另有 4 项 AppKit 菜单与设置流程回归测试及 1 项应用元数据契约测试。测试使用 mock，不更改系统默认浏览器，也不打开真实网页或写入真实剪贴板。
 
 已覆盖：
 
-- HTTP/HTTPS 地址及百分号编码、查询参数、片段的保留；其他协议和缺少 host 的网址拒绝。
+- HTTP/HTTPS 地址及本地 HTML/XHTML 文件网址的百分号编码、查询参数和片段保留；拒绝其他协议、远程文件主机、目录、其他文件类型及缺少 host 的网页地址。
 - 多链接 FIFO、队列内去重、已处理网址重新打开、清空空队列。
 - 浏览器去重、自身排除、已有顺序、新浏览器追加、排序持久化、隐藏/恢复及全部隐藏。
 - 独立 UserDefaults 读写、缺省值及错误存储类型。

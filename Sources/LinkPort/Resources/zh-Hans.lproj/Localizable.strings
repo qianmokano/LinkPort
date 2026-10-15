@@ -56,8 +56,8 @@
 "about.version" = "版本 %@";
 "about.privacy.title" = "链接始终由你掌握";
 "about.privacy.body" = "LinkPort 不收集数据、不连接服务器、不保存浏览历史。仅在这台 Mac 保存浏览器顺序、显示状态、语言和欢迎提示偏好。网址只在内存中保留，处理或取消后即移除。";
-"about.scope" = "LinkPort 处理系统交给默认浏览器的 HTTP 和 HTTPS 链接。应用内置网页，以及明确指定其他浏览器的链接，仍由相应应用处理。";
-"error.invalidURL" = "仅支持有效的 HTTP 和 HTTPS 网址，已跳过不支持的链接。";
+"about.scope" = "LinkPort 处理系统交给默认浏览器的 HTTP、HTTPS 链接和本地 HTML/XHTML 文件。应用内置网页，以及明确指定其他浏览器的链接，仍由相应应用处理。";
+"error.invalidURL" = "仅支持有效的 HTTP/HTTPS 链接和本地 HTML/XHTML 文件，已跳过不支持的项目。";
 "error.browserUnavailable" = "这个浏览器已不可用，请选择其他浏览器或复制网址。";
 "error.openFailed" = "未能通过浏览器打开链接，请重试、选择其他浏览器或复制网址。";
 "error.copyFailed" = "未能写入剪贴板，请再次尝试复制。";

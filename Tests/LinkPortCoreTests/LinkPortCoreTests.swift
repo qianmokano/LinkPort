@@ -75,11 +75,40 @@ private func fixture(_ preferences: BrowserPreferences = .init()) -> (LinkContro
     #expect(queue.count == 0)
 }
 
-@Test(arguments: ["file:///tmp/link", "mailto:user@example.com", "javascript:alert(1)", "https:", "/relative", "ftp://example.com"])
+@Test(arguments: [
+    "file:///tmp/link", "file:///tmp/page.pdf", "file:///tmp/page.html/", "file://remote.example/page.html",
+    "mailto:user@example.com", "javascript:alert(1)", "https:", "/relative", "ftp://example.com",
+])
 func rejectsUnsupportedLinks(_ value: String) {
     var queue = LinkQueue()
     #expect(queue.enqueue([url(value)]) == 1)
     #expect(queue.urls.isEmpty)
+}
+
+@Test(arguments: [
+    "file:///tmp/page.html", "file:///tmp/page.htm", "file:///tmp/page.xhtml", "file:///tmp/page.xht",
+    "file:///tmp/PAGE.HTML", "file://localhost/tmp/page.htm", "file:///tmp/a%20b.xhtml?q=1#section",
+])
+func queueAcceptsLocalWebPagesAndPreservesTheirAddresses(_ value: String) {
+    let page = url(value)
+    var queue = LinkQueue()
+    #expect(queue.enqueue([page, url(), page]) == 0)
+    #expect(queue.urls == [page, url()])
+    #expect(queue.current?.absoluteString == value)
+}
+
+@Test @MainActor func localWebPagesUseExistingOpenAndCopyFlow() async {
+    let (model, system, _) = fixture()
+    let page = URL(fileURLWithPath: "/tmp/本地页面.html")
+    model.receive([page])
+    await model.open("safari")
+    #expect(system.opened.first?.0 == page)
+    #expect(system.opened.first?.1 == "safari")
+    #expect(model.queue.current == nil)
+    model.receive([page])
+    model.copyCurrent()
+    #expect(system.copied == [page.absoluteString])
+    #expect(model.queue.current == nil)
 }
 
 @Test func catalogsExcludeSelfDeduplicateAndAppendNewBrowsers() {

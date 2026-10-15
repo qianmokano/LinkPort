@@ -67,8 +67,11 @@ public struct LinkQueue: Equatable, Sendable {
         var invalidCount = 0
         var existing = Set(urls.map(\.absoluteString))
         for url in incoming {
-            guard let scheme = url.scheme?.lowercased(), ["http", "https"].contains(scheme),
-                  let host = url.host, !host.isEmpty else {
+            let isWebsite = ["http", "https"].contains(url.scheme?.lowercased() ?? "") && url.host?.isEmpty == false
+            let isLocalPage = url.isFileURL && !url.hasDirectoryPath
+                && ["", "localhost"].contains(url.host?.lowercased() ?? "")
+                && ["html", "htm", "xhtml", "xht"].contains(url.pathExtension.lowercased())
+            guard isWebsite || isLocalPage else {
                 invalidCount += 1
                 continue
             }

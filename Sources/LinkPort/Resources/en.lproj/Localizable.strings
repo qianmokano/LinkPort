@@ -56,8 +56,8 @@
 "about.version" = "Version %@";
 "about.privacy.title" = "Your links stay yours";
 "about.privacy.body" = "LinkPort does not collect data, contact servers, or save browsing history. Only browser order, visibility, language, and the welcome preference are stored on this Mac. URLs are held in memory until handled or dismissed.";
-"about.scope" = "LinkPort handles HTTP and HTTPS links sent to the system default browser. Embedded web views and links explicitly sent to another browser stay with that app.";
-"error.invalidURL" = "Only valid HTTP and HTTPS links are supported. Unsupported links were skipped.";
+"about.scope" = "LinkPort handles HTTP and HTTPS links and local HTML/XHTML files sent to the system default browser. Embedded web views and links explicitly sent to another browser stay with that app.";
+"error.invalidURL" = "Only valid HTTP/HTTPS links and local HTML/XHTML files are supported. Unsupported items were skipped.";
 "error.browserUnavailable" = "This browser is no longer available. Choose another browser or copy the URL.";
 "error.openFailed" = "The browser could not open this link. Try again, choose another browser, or copy the URL.";
 "error.copyFailed" = "The clipboard could not be updated. Please try copying again.";
