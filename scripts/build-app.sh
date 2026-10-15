@@ -40,4 +40,3 @@ mv "$STAGING_PATH" "$APP_PATH"
 ditto -c -k --sequesterRsrc --keepParent "$APP_PATH" "$PROJECT_ROOT/.build/LinkPort.zip"
 mv -f "$PROJECT_ROOT/.build/LinkPort.zip" "$PROJECT_ROOT/dist/LinkPort.zip"
 printf 'Built: %s\n' "$APP_PATH"
-

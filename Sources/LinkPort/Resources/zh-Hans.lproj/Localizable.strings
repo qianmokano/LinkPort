@@ -57,4 +57,3 @@
 "error.openFailed" = "未能通过浏览器打开链接，请重试、选择其他浏览器或复制网址。";
 "error.copyFailed" = "未能写入剪贴板，请再次尝试复制。";
 "error.defaultChangeFailed" = "默认浏览器尚未完整更改。可以重试，或在系统设置中手动选择 LinkPort。";
-

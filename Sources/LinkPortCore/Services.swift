@@ -35,4 +35,3 @@ public final class DefaultsPreferenceStore: PreferenceStore {
         defaults.set(preferences.hasSeenWelcome, forKey: "hasSeenWelcome")
     }
 }
-

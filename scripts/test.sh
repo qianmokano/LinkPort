@@ -8,4 +8,3 @@ if [[ -z "${DEVELOPER_DIR:-}" && "$SELECTED_DEVELOPER" == */CommandLineTools && 
     export DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer
 fi
 swift test --package-path "$PROJECT_ROOT" --build-system native --enable-code-coverage "$@"
-

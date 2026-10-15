@@ -52,4 +52,3 @@ final class NativeBrowserSystem: BrowserSystem {
         try await workspace.setDefaultApplication(at: Bundle.main.bundleURL, toOpenURLsWithScheme: scheme)
     }
 }
-

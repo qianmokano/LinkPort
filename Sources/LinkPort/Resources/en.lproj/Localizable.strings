@@ -57,4 +57,3 @@
 "error.openFailed" = "The browser could not open this link. Try again, choose another browser, or copy the URL.";
 "error.copyFailed" = "The clipboard could not be updated. Please try copying again.";
 "error.defaultChangeFailed" = "The default browser was not changed completely. You can try again or choose LinkPort in System Settings.";
-

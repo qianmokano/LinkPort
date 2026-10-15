@@ -94,4 +94,3 @@ public enum PickerGeometry {
         return CGRect(x: x, y: y, width: width, height: height)
     }
 }
-

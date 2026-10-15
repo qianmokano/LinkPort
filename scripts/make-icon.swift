@@ -49,4 +49,3 @@ for size in [16, 32, 128, 256, 512] {
     try render(pixels: size).write(to: output.appendingPathComponent("icon_\(size)x\(size).png"))
     try render(pixels: size * 2).write(to: output.appendingPathComponent("icon_\(size)x\(size)@2x.png"))
 }
-

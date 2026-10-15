@@ -118,4 +118,3 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         return true
     }
 }
-
