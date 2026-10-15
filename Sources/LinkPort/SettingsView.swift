@@ -199,8 +199,6 @@ struct SettingsView: View {
                     .foregroundStyle(.secondary)
                 Text(L10n.text("app.tagline")).foregroundStyle(.secondary)
             }.frame(maxWidth: .infinity).padding(.vertical, 12)
-            LabeledContent(L10n.text("about.compatibility"), value: "macOS 26+")
-            LabeledContent(L10n.text("about.architectures"), value: "Apple Silicon & Intel")
         }
         Section {
             Label(L10n.text("about.privacy.body"), systemImage: "lock.shield")

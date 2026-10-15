@@ -56,8 +56,6 @@
 "browsers.showNamed" = "Show %@ in picker";
 "browsers.hideNamed" = "Hide %@ from picker";
 "about.version" = "Version %@";
-"about.compatibility" = "System requirement";
-"about.architectures" = "Supported processors";
 "about.privacy.title" = "Your links stay yours";
 "about.privacy.body" = "LinkPort does not collect data, contact servers, or save browsing history. Only browser order, visibility, language, and the welcome preference are stored on this Mac. URLs are held in memory until handled or dismissed.";
 "about.scope" = "LinkPort handles HTTP and HTTPS links sent to the system default browser. Embedded web views and links explicitly sent to another browser stay with that app.";

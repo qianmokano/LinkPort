@@ -56,8 +56,6 @@
 "browsers.showNamed" = "在卡片中显示 %@";
 "browsers.hideNamed" = "从卡片中隐藏 %@";
 "about.version" = "版本 %@";
-"about.compatibility" = "系统要求";
-"about.architectures" = "支持的处理器";
 "about.privacy.title" = "链接始终由你掌握";
 "about.privacy.body" = "LinkPort 不收集数据、不连接服务器、不保存浏览历史。仅在这台 Mac 保存浏览器顺序、显示状态、语言和欢迎提示偏好。网址只在内存中保留，处理或取消后即移除。";
 "about.scope" = "LinkPort 处理系统交给默认浏览器的 HTTP 和 HTTPS 链接。应用内置网页，以及明确指定其他浏览器的链接，仍由相应应用处理。";
