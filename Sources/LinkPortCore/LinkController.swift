@@ -66,14 +66,14 @@ public final class LinkController {
         refresh()
     }
 
-    public func moveBrowser(_ id: String, before destination: String) {
-        guard id != destination,
-              let source = browsers.firstIndex(where: { $0.id == id }),
-              browsers.contains(where: { $0.id == destination }) else { return }
-        var reordered = browsers
-        let item = reordered.remove(at: source)
-        guard let target = reordered.firstIndex(where: { $0.id == destination }) else { return }
-        reordered.insert(item, at: target)
+    public func moveBrowsers(fromOffsets source: IndexSet, toOffset destination: Int) {
+        guard !source.isEmpty, source.allSatisfy({ browsers.indices.contains($0) }),
+              (0...browsers.count).contains(destination) else { return }
+        let moving = source.map { browsers[$0] }
+        var reordered = browsers.enumerated().filter { !source.contains($0.offset) }.map(\.element)
+        let insertion = destination - source.filter { $0 < destination }.count
+        reordered.insert(contentsOf: moving, at: insertion)
+        guard reordered != browsers else { return }
         persistOrder(reordered)
     }
 

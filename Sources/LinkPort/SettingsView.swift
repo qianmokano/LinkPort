@@ -68,21 +68,28 @@ struct SettingsView: View {
     let changeLanguage: (AppLanguage) -> Void
 
     var body: some View {
-        Form {
-            switch page {
-            case .general: general
-            case .browsers: browsers
-            case .about: about
-            }
-            if let issue = model.issue {
-                Section { IssueBanner(issue: issue) }
+        Group {
+            if page == .browsers {
+                browsers
+            } else {
+                Form {
+                    if page == .general { general } else { about }
+                    issueSection
+                }
+                .formStyle(.grouped)
             }
         }
-        .formStyle(.grouped)
         .controlSize(.regular)
         .environment(\.locale, L10n.locale)
         // Recreate accessibility groups to clear their cached localized labels.
         .id(L10n.locale.identifier)
+    }
+
+    @ViewBuilder
+    private var issueSection: some View {
+        if let issue = model.issue {
+            Section { IssueBanner(issue: issue) }
+        }
     }
 
     @ViewBuilder
@@ -150,67 +157,35 @@ struct SettingsView: View {
 
     @ViewBuilder
     private var browsers: some View {
-        Section {
-            LabeledContent {
-                Button { model.refresh() } label: { Label(L10n.text("browsers.refresh"), systemImage: "arrow.clockwise") }
-            } label: {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack {
                 Text(L10n.format("browsers.count", model.visibleBrowsers.count, model.browsers.count))
+                Spacer()
+                Button { model.refresh() } label: { Label(L10n.text("browsers.refresh"), systemImage: "arrow.clockwise") }
             }
-        } footer: {
+            .padding(.horizontal, 24)
             Text(L10n.text("browsers.instructions"))
-        }
-        Section {
+                .font(.callout).foregroundStyle(.secondary)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 24)
             if model.browsers.isEmpty {
                 ContentUnavailableView(L10n.text("browsers.empty"), systemImage: "globe",
                                        description: Text(L10n.text("browsers.empty.description")))
             } else {
-                ForEach(Array(model.browsers.enumerated()), id: \.element.id) { index, browser in
-                    browserRow(browser, index: index)
-                }
+                BrowserListView(
+                    browsers: model.browsers, hiddenIDs: model.preferences.hiddenIDs,
+                    move: { model.moveBrowsers(fromOffsets: $0, toOffset: $1) },
+                    moveBy: { model.moveBrowser($0, by: $1) },
+                    setHidden: { model.setHidden($0, hidden: $1) }
+                )
             }
-        } footer: {
             if !model.browsers.isEmpty && model.visibleBrowsers.isEmpty {
                 Text(L10n.text("browsers.allHidden"))
+                    .font(.callout).foregroundStyle(.secondary).padding(.horizontal, 24)
             }
+            if let issue = model.issue { IssueBanner(issue: issue).padding(.horizontal, 24) }
         }
-    }
-
-    private func browserRow(_ browser: Browser, index: Int) -> some View {
-        let hidden = model.preferences.hiddenIDs.contains(browser.id)
-        return HStack(spacing: 12) {
-            Image(systemName: "line.3.horizontal").foregroundStyle(.tertiary).font(.caption)
-                .accessibilityHidden(true)
-            BrowserIcon(browser: browser, size: 32).opacity(hidden ? 0.4 : 1)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(browser.name).foregroundStyle(hidden ? .secondary : .primary)
-                Text(browser.id).font(.caption).foregroundStyle(.secondary).lineLimit(1)
-            }
-            Spacer(minLength: 8)
-            ControlGroup {
-                Button { model.moveBrowser(browser.id, by: -1) } label: { Image(systemName: "chevron.up") }
-                    .disabled(index == 0).help(L10n.text("browsers.moveUp"))
-                    .accessibilityLabel(L10n.format("browsers.moveUpNamed", browser.name))
-                Button { model.moveBrowser(browser.id, by: 1) } label: { Image(systemName: "chevron.down") }
-                    .disabled(index == model.browsers.count - 1).help(L10n.text("browsers.moveDown"))
-                    .accessibilityLabel(L10n.format("browsers.moveDownNamed", browser.name))
-            }.controlSize(.small)
-            Toggle(L10n.format("browsers.showNamed", browser.name), isOn: Binding(
-                get: { !model.preferences.hiddenIDs.contains(browser.id) },
-                set: { model.setHidden(browser.id, hidden: !$0) }
-            ))
-            .toggleStyle(.switch).labelsHidden()
-            .help(L10n.text(hidden ? "browsers.show" : "browsers.hide"))
-        }
-        .padding(.vertical, 4)
-        .contentShape(Rectangle())
-        .draggable("linkport-browser:\(browser.id)")
-        .dropDestination(for: String.self) { values, _ in
-            guard let value = values.first, value.hasPrefix("linkport-browser:") else { return false }
-            let id = String(value.dropFirst("linkport-browser:".count))
-            guard model.browsers.contains(where: { $0.id == id }) else { return false }
-            model.moveBrowser(id, before: browser.id)
-            return true
-        }
+        .padding(.top, 20).padding(.bottom, 16)
     }
 
     @ViewBuilder

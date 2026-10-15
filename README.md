@@ -36,9 +36,9 @@ open dist/LinkPort.app
 
 选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
 
-设置窗口使用 `NSTabViewController` 的工具栏分页、SwiftUI 分组 `Form`、`LabeledContent`、标准开关及 `ControlGroup`。字体、强调色、滚动边缘、工具栏选中状态均使用系统组件；设置页标题跟随当前分页，窗口采用原生偏好设置样式。
+设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 AppKit `NSTableView` 和原生按钮、开关。表格启用系统的空隙插入反馈，拖动时行自动让位并提示落点，支持多行移动，排序保存到本机。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。
 
-实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)。
+实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[原生拖动反馈](https://developer.apple.com/documentation/appkit/nstableview/draggingdestinationfeedbackstyle-swift.enum)。
 
 ## 恢复默认浏览器与卸载
 
