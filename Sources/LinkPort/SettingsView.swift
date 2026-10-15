@@ -2,6 +2,7 @@ import AppKit
 import LinkPortCore
 import SwiftUI
 
+@MainActor
 enum SettingsPage: String, CaseIterable {
     case general, browsers, about
 
@@ -17,13 +18,13 @@ enum SettingsPage: String, CaseIterable {
 
 @MainActor
 final class SettingsTabController: NSTabViewController {
-    init(model: LinkController, preview: @escaping () -> Void) {
+    init(model: LinkController, preview: @escaping () -> Void, changeLanguage: @escaping (AppLanguage) -> Void) {
         super.init(nibName: nil, bundle: nil)
         tabStyle = .toolbar
         canPropagateSelectedChildViewControllerTitle = true
         transitionOptions = []
         for page in SettingsPage.allCases {
-            let pane = NSHostingController(rootView: SettingsView(page: page, model: model, preview: preview))
+            let pane = NSHostingController(rootView: SettingsView(page: page, model: model, preview: preview, changeLanguage: changeLanguage))
             pane.title = page.title
             pane.preferredContentSize = NSSize(width: 640, height: 600)
             let item = NSTabViewItem(viewController: pane)
@@ -35,6 +36,17 @@ final class SettingsTabController: NSTabViewController {
     }
 
     required init?(coder: NSCoder) { nil }
+
+    func updateLocalization() {
+        for item in tabViewItems {
+            guard let identifier = item.identifier as? String,
+                  let page = SettingsPage(rawValue: identifier) else { continue }
+            item.viewController?.title = page.title
+            item.label = page.title
+            item.image = NSImage(systemSymbolName: page.symbol, accessibilityDescription: page.title)
+        }
+        viewIfLoaded?.window?.title = tabViewItems[selectedTabViewItemIndex].label
+    }
 
     override func viewDidAppear() {
         super.viewDidAppear()
@@ -53,6 +65,7 @@ struct SettingsView: View {
     let page: SettingsPage
     let model: LinkController
     let preview: () -> Void
+    let changeLanguage: (AppLanguage) -> Void
 
     var body: some View {
         Form {
@@ -67,6 +80,9 @@ struct SettingsView: View {
         }
         .formStyle(.grouped)
         .controlSize(.regular)
+        .environment(\.locale, L10n.locale)
+        // Recreate accessibility groups to clear their cached localized labels.
+        .id(L10n.locale.identifier)
     }
 
     @ViewBuilder
@@ -80,6 +96,19 @@ struct SettingsView: View {
             } header: {
                 Label(L10n.text("welcome.title"), systemImage: "hand.wave")
             }
+        }
+        Section {
+            Picker(L10n.text("language.title"), selection: Binding(
+                get: { model.preferences.language },
+                set: { changeLanguage($0) }
+            )) {
+                ForEach(AppLanguage.allCases, id: \.self) { language in
+                    Text(L10n.languageName(language)).tag(language)
+                }
+            }
+            .pickerStyle(.menu)
+        } footer: {
+            Text(L10n.text("language.description"))
         }
         Section {
             LabeledContent {

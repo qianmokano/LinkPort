@@ -17,6 +17,9 @@
 "settings.general" = "通用";
 "settings.browsers" = "浏览器";
 "settings.about" = "关于";
+"language.title" = "语言";
+"language.system" = "跟随系统";
+"language.description" = "切换后立即应用于 LinkPort。";
 "settings.general.subtitle" = "让每个链接，都去对的地方。";
 "settings.browsers.subtitle" = "常用的浏览器，按你的习惯排列。";
 "settings.about.subtitle" = "一个安静待在菜单栏的小工具。";
@@ -56,7 +59,7 @@
 "about.compatibility" = "系统要求";
 "about.architectures" = "支持的处理器";
 "about.privacy.title" = "链接始终由你掌握";
-"about.privacy.body" = "LinkPort 不收集数据、不连接服务器、不保存浏览历史。仅在这台 Mac 保存浏览器顺序、显示状态和欢迎提示偏好。网址只在内存中保留，处理或取消后即移除。";
+"about.privacy.body" = "LinkPort 不收集数据、不连接服务器、不保存浏览历史。仅在这台 Mac 保存浏览器顺序、显示状态、语言和欢迎提示偏好。网址只在内存中保留，处理或取消后即移除。";
 "about.scope" = "LinkPort 处理系统交给默认浏览器的 HTTP 和 HTTPS 链接。应用内置网页，以及明确指定其他浏览器的链接，仍由相应应用处理。";
 "error.invalidURL" = "仅支持有效的 HTTP 和 HTTPS 网址，已跳过不支持的链接。";
 "error.browserUnavailable" = "这个浏览器已不可用，请选择其他浏览器或复制网址。";

@@ -106,6 +106,49 @@ func rejectsUnsupportedLinks(_ value: String) {
     #expect(store.load().hiddenIDs.isEmpty)
 }
 
+@Test(arguments: AppLanguage.allCases) @MainActor
+func languagePreferencePersistsWithoutChangingBrowserPreferences(_ language: AppLanguage) {
+    let name = "LinkPortLanguageTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: name)!
+    defer { defaults.removePersistentDomain(forName: name) }
+    let store = DefaultsPreferenceStore(defaults: defaults)
+    store.save(BrowserPreferences(orderedIDs: ["safari", "chrome"], hiddenIDs: ["chrome"], hasSeenWelcome: true))
+    let model = LinkController(bundleID: ownID, system: FakeSystem(), store: store)
+    model.receive([url()])
+    let selected = model.selectedID
+    model.setLanguage(language)
+    let saved = DefaultsPreferenceStore(defaults: defaults).load()
+    #expect(saved.language == language)
+    #expect(model.preferences == saved)
+    #expect(saved.orderedIDs == ["safari", "chrome"])
+    #expect(saved.hiddenIDs == ["chrome"])
+    #expect(saved.hasSeenWelcome)
+    #expect(model.queue.current == url())
+    #expect(model.selectedID == selected)
+    #expect(LinkController(bundleID: ownID, system: FakeSystem(), store: store).preferences.language == language)
+}
+
+@Test(arguments: ["unsupported", "", "zh-Hant", "123"]) @MainActor
+func invalidLanguagePreferencesFallBackToSystem(_ value: String) {
+    let name = "LinkPortLanguageTests.\(UUID().uuidString)"
+    let defaults = UserDefaults(suiteName: name)!
+    defer { defaults.removePersistentDomain(forName: name) }
+    defaults.set(value, forKey: "appLanguage")
+    #expect(DefaultsPreferenceStore(defaults: defaults).load().language == .system)
+    defaults.set(["en"], forKey: "appLanguage")
+    #expect(DefaultsPreferenceStore(defaults: defaults).load().language == .system)
+}
+
+@Test func languageSelectionOverridesSystemAndMatchesSupportedLocalizations() {
+    #expect(AppLanguage.english.localizationIdentifier(preferredLanguages: ["zh-Hans-CN"]) == "en")
+    #expect(AppLanguage.simplifiedChinese.localizationIdentifier(preferredLanguages: ["en-US"]) == "zh-Hans")
+    #expect(AppLanguage.system.localizationIdentifier(preferredLanguages: ["zh-CN"]) == "zh-Hans")
+    #expect(AppLanguage.system.localizationIdentifier(preferredLanguages: ["en-US", "zh-Hans"]) == "en")
+    #expect(AppLanguage.system.localizationIdentifier(preferredLanguages: ["fr-FR", "zh-Hans-CN"]) == "zh-Hans")
+    #expect(AppLanguage.system.localizationIdentifier(preferredLanguages: ["ja-JP"]) == "en")
+    #expect(AppLanguage.system.localizationIdentifier(preferredLanguages: []) == "en")
+}
+
 @Test @MainActor func selectionVisibilityAndRefresh() {
     let (model, system, store) = fixture()
     #expect(model.visibleBrowsers.map(\.id) == ["chrome", "safari"])

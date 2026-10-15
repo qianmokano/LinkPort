@@ -25,7 +25,8 @@ public final class DefaultsPreferenceStore: PreferenceStore {
         BrowserPreferences(
             orderedIDs: defaults.stringArray(forKey: "browserOrder") ?? [],
             hiddenIDs: Set(defaults.stringArray(forKey: "hiddenBrowsers") ?? []),
-            hasSeenWelcome: defaults.bool(forKey: "hasSeenWelcome")
+            hasSeenWelcome: defaults.bool(forKey: "hasSeenWelcome"),
+            language: AppLanguage(rawValue: defaults.string(forKey: "appLanguage") ?? "") ?? .system
         )
     }
 
@@ -33,5 +34,6 @@ public final class DefaultsPreferenceStore: PreferenceStore {
         defaults.set(preferences.orderedIDs, forKey: "browserOrder")
         defaults.set(preferences.hiddenIDs.sorted(), forKey: "hiddenBrowsers")
         defaults.set(preferences.hasSeenWelcome, forKey: "hasSeenWelcome")
+        defaults.set(preferences.language.rawValue, forKey: "appLanguage")
     }
 }

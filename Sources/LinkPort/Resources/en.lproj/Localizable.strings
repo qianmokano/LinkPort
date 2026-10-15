@@ -17,6 +17,9 @@
 "settings.general" = "General";
 "settings.browsers" = "Browsers";
 "settings.about" = "About";
+"language.title" = "Language";
+"language.system" = "Follow System";
+"language.description" = "Changes apply immediately to LinkPort.";
 "settings.general.subtitle" = "Make every link feel at home.";
 "settings.browsers.subtitle" = "Your browsers, in your order.";
 "settings.about.subtitle" = "A small utility that stays out of your way.";
@@ -56,7 +59,7 @@
 "about.compatibility" = "System requirement";
 "about.architectures" = "Supported processors";
 "about.privacy.title" = "Your links stay yours";
-"about.privacy.body" = "LinkPort does not collect data, contact servers, or save browsing history. Only browser order, visibility, and the welcome preference are stored on this Mac. URLs are held in memory until handled or dismissed.";
+"about.privacy.body" = "LinkPort does not collect data, contact servers, or save browsing history. Only browser order, visibility, language, and the welcome preference are stored on this Mac. URLs are held in memory until handled or dismissed.";
 "about.scope" = "LinkPort handles HTTP and HTTPS links sent to the system default browser. Embedded web views and links explicitly sent to another browser stay with that app.";
 "error.invalidURL" = "Only valid HTTP and HTTPS links are supported. Unsupported links were skipped.";
 "error.browserUnavailable" = "This browser is no longer available. Choose another browser or copy the URL.";

@@ -29,6 +29,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var refreshObserver: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
+        L10n.setLanguage(model.preferences.language)
         installMainMenu()
         let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         item.button?.image = NSImage(systemSymbolName: "arrow.triangle.branch", accessibilityDescription: "LinkPort")
@@ -134,6 +135,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         picker.present()
     }
 
+    private func changeLanguage(_ language: AppLanguage) {
+        model.setLanguage(language)
+        L10n.setLanguage(language)
+        installMainMenu()
+        (settingsWindow?.contentViewController as? SettingsTabController)?.updateLocalization()
+    }
+
     private func showSettings() {
         if model.isOpening { return }
         if model.queue.current != nil { picker.cancel() }
@@ -144,7 +152,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             window.title = L10n.text("settings.general")
             window.toolbarStyle = .preference
             window.isReleasedWhenClosed = false
-            window.contentViewController = SettingsTabController(model: model, preview: { [weak self] in self?.previewPicker() })
+            window.contentViewController = SettingsTabController(
+                model: model,
+                preview: { [weak self] in self?.previewPicker() },
+                changeLanguage: { [weak self] language in self?.changeLanguage(language) }
+            )
             window.setContentSize(NSSize(width: 640, height: 600))
             window.center()
             settingsWindow = window

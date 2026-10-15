@@ -91,6 +91,8 @@ struct PickerView: View {
 
         }
         .padding(20)
+        .environment(\.locale, L10n.locale)
+        .id(L10n.locale.identifier)
     }
 
     private func browserButton(_ browser: Browser, index: Int) -> some View {

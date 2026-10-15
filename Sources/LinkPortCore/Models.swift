@@ -13,15 +13,28 @@ public struct Browser: Identifiable, Hashable, Sendable {
     }
 }
 
+public enum AppLanguage: String, CaseIterable, Sendable {
+    case system
+    case english = "en"
+    case simplifiedChinese = "zh-Hans"
+
+    public func localizationIdentifier(preferredLanguages: [String] = Locale.preferredLanguages) -> String {
+        guard self == .system else { return rawValue }
+        return Bundle.preferredLocalizations(from: ["en", "zh-Hans"], forPreferences: preferredLanguages).first ?? "en"
+    }
+}
+
 public struct BrowserPreferences: Equatable, Sendable {
     public var orderedIDs: [String]
     public var hiddenIDs: Set<String>
     public var hasSeenWelcome: Bool
+    public var language: AppLanguage
 
-    public init(orderedIDs: [String] = [], hiddenIDs: Set<String> = [], hasSeenWelcome: Bool = false) {
+    public init(orderedIDs: [String] = [], hiddenIDs: Set<String> = [], hasSeenWelcome: Bool = false, language: AppLanguage = .system) {
         self.orderedIDs = orderedIDs
         self.hiddenIDs = hiddenIDs
         self.hasSeenWelcome = hasSeenWelcome
+        self.language = language
     }
 }
 

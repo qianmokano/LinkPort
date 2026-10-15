@@ -91,6 +91,11 @@ public final class LinkController {
         store.save(preferences)
     }
 
+    public func setLanguage(_ language: AppLanguage) {
+        preferences.language = language
+        store.save(preferences)
+    }
+
     public func dismissIssue() { issue = nil }
 
     public func open(_ id: String? = nil) async {
