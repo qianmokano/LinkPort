@@ -100,10 +100,12 @@ struct PickerView: View {
         return Button { open(browser.id) } label: {
             VStack(spacing: 4) {
                 BrowserIcon(browser: browser, size: 48)
-                Text(browser.name).font(.caption).lineLimit(2).multilineTextAlignment(.center)
-                    .frame(height: 30, alignment: .top)
-                Text(index < 9 ? "⌘\(index + 1)" : " ")
-                    .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
+                VStack(spacing: 2) {
+                    Text(browser.name).font(.caption).lineLimit(2).multilineTextAlignment(.center)
+                    Text(index < 9 ? "⌘\(index + 1)" : " ")
+                        .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
+                }
+                .frame(height: 42, alignment: .top)
             }
             .frame(maxWidth: .infinity).padding(.vertical, 8)
             .background(selected ? Color.gray.opacity(0.18) : .clear, in: RoundedRectangle(cornerRadius: 16))
