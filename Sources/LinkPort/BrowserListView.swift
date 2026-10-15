@@ -9,7 +9,6 @@ struct BrowserListView: View {
     let browsers: [Browser]
     let hiddenIDs: Set<String>
     let move: (IndexSet, Int) -> Void
-    let moveBefore: ([String], String?) -> Void
     let moveBy: (String, Int) -> Void
     let setHidden: (String, Bool) -> Void
     @BrowserSelectionState private var selection: Set<String> = []
@@ -17,34 +16,16 @@ struct BrowserListView: View {
 
     var body: some View {
         browserList
-            .onDropSessionUpdated { autoscroll.update($0) }
             .onDragSessionUpdated { autoscroll.update($0) }
-            .onDisappear { autoscroll.direction = 0 }
+            .onDisappear { autoscroll.stop() }
     }
 
     private var browserList: some View {
-        Group {
-            if #available(macOS 27, *) {
-                List(selection: $selection) {
-                    ForEach(browsers) { browser in
-                        browserRow(browser).tag(browser.id)
-                    }
-                    .reorderable()
-                }
-                .reorderContainer(for: Browser.self) { difference in
-                    switch difference.destination.position {
-                    case .before(let id): moveBefore(difference.sources, id)
-                    case .end: moveBefore(difference.sources, nil)
-                    }
-                }
-            } else {
-                List(selection: $selection) {
-                    ForEach(browsers) { browser in
-                        browserRow(browser).tag(browser.id)
-                    }
-                    .onMove(perform: move)
-                }
+        List(selection: $selection) {
+            ForEach(browsers) { browser in
+                browserRow(browser).tag(browser.id)
             }
+            .onMove(perform: move)
         }
         .listStyle(.inset)
         .scrollContentBackground(.hidden)

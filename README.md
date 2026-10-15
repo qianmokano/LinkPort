@@ -36,11 +36,11 @@ open dist/LinkPort.app
 
 选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
 
-设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List` 和标准按钮、开关。macOS 27 使用 `reorderable + reorderContainer`，按系统重排接口提供拖动中的占位空隙及行让位；macOS 26 保留 `.onMove` 兼容路径。松手后按浏览器 ID 保存新顺序，也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
+设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List + .onMove` 和标准按钮、开关。列表负责原生拖动和落位后保存顺序，轻量适配层将底层表格的插入反馈设为 `.gap`，让系统在拖动中留出空隙、移动其他行。也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
 
-边缘滚动监听原生拖放会话，在列表顶部或底部 48 pt 范围内通过轻量的 `NSScrollView` 适配层持续滚动，列表内容及重排仍由 SwiftUI 管理。计时器加入公共运行循环模式，以便在 macOS 原生拖动期间继续工作；离开边缘、结束拖动或关闭页面即停止。
+边缘滚动只监听原生拖动来源会话，在拖动期间持续读取指针位置，在列表顶部或底部 48 pt 范围内通过轻量的 `NSScrollView` 适配层连续滚动。列表内容、拖动手势及落点提交仍由 SwiftUI 管理。计时器加入公共运行循环模式，以便在 macOS 原生拖动期间继续工作；离开边缘即停止滚动，松手、结束拖动或关闭页面时销毁计时器。
 
-实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[SwiftUI 原生占位重排](https://developer.apple.com/documentation/swiftui/reordering-items-in-lists-stacks-grids-and-custom-layouts)。
+实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[原生空隙插入反馈](https://developer.apple.com/documentation/appkit/nstableview/draggingdestinationfeedbackstyle-swift.enum/gap)。
 
 ## 恢复默认浏览器与卸载
 

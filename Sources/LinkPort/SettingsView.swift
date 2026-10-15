@@ -175,7 +175,6 @@ struct SettingsView: View {
                 BrowserListView(
                     browsers: model.browsers, hiddenIDs: model.preferences.hiddenIDs,
                     move: { model.moveBrowsers(fromOffsets: $0, toOffset: $1) },
-                    moveBefore: { model.moveBrowsers(withIDs: $0, before: $1) },
                     moveBy: { model.moveBrowser($0, by: $1) },
                     setHidden: { model.setHidden($0, hidden: $1) }
                 )

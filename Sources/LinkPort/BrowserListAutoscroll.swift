@@ -5,39 +5,32 @@ import SwiftUI
 @MainActor
 final class BrowserListAutoscrollState {
     weak var scrollView: NSScrollView?
-    var direction = 0 {
-        didSet {
-            guard direction != oldValue else { return }
-            if direction == 0 {
-                timer?.invalidate()
-                timer = nil
-            } else if timer == nil {
-                let timer = Timer(timeInterval: 0.03, repeats: true) { [weak self] timer in
-                    guard let self else { timer.invalidate(); return }
-                    MainActor.assumeIsolated { self.advance() }
-                }
-                // Native dragging runs an event-tracking loop, so default-mode timers pause.
-                RunLoop.main.add(timer, forMode: .common)
-                self.timer = timer
-            }
-        }
-    }
     private var timer: Timer?
-
-    func update(_ session: DropSession) {
-        switch session.phase {
-        case .entering, .active:
-            direction = pointerDirection ?? DragAutoscroll.direction(at: session.location, in: session.size)
-        default:
-            direction = 0
-        }
-    }
 
     func update(_ session: DragSession) {
         switch session.phase {
-        case .active: direction = pointerDirection ?? 0
-        default: direction = 0
+        case .active:
+            start()
+        default:
+            stop()
         }
+    }
+
+    func stop() {
+        timer?.invalidate()
+        timer = nil
+    }
+
+    private func start() {
+        guard timer == nil else { return }
+        // Leave destination handling to List; scrolling only observes the source.
+        let timer = Timer(timeInterval: 0.03, repeats: true) { [weak self] timer in
+            guard let self else { timer.invalidate(); return }
+            MainActor.assumeIsolated { self.advance() }
+        }
+        // Native dragging runs an event-tracking loop, so default-mode timers pause.
+        RunLoop.main.add(timer, forMode: .common)
+        self.timer = timer
     }
 
     private var pointerDirection: Int? {
@@ -50,6 +43,9 @@ final class BrowserListAutoscrollState {
     }
 
     private func advance() {
+        guard NSEvent.pressedMouseButtons & 1 != 0 else { stop(); return }
+        // Source phase updates need not fire on every pointer movement.
+        guard let direction = pointerDirection, direction != 0 else { return }
         guard let scrollView, let document = scrollView.documentView else { return }
         let clip = scrollView.contentView
         let delta = CGFloat(direction) * 10 * (document.isFlipped ? 1 : -1)
@@ -92,6 +88,10 @@ private final class ScrollProbeView: NSView {
     override func hitTest(_ point: NSPoint) -> NSView? { nil }
 
     func resolveScrollView() {
-        if let enclosingScrollView { foundScrollView?(enclosingScrollView) }
+        guard let enclosingScrollView else { return }
+        // List still owns its data source, delegate, drag gesture and onMove.
+        // Ask the native table to make room for the drop using its gap feedback.
+        (enclosingScrollView.documentView as? NSTableView)?.draggingDestinationFeedbackStyle = .gap
+        foundScrollView?(enclosingScrollView)
     }
 }
