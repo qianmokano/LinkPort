@@ -26,10 +26,9 @@
 "welcome.done" = "知道了";
 "picker.title" = "用什么打开？";
 "picker.pending" = "共 %d 个待处理链接";
-"picker.copy" = "复制网址";
 "picker.cancel" = "取消所有待处理链接";
 "picker.openIn" = "使用 %@ 打开";
-"picker.empty" = "没有可显示的浏览器，仍然可以复制网址。";
+"picker.empty" = "没有可显示的浏览器，按 ⌘C 复制网址。";
 "picker.preview" = "预览选择卡片";
 "picker.try" = "试试看";
 "picker.preview.description" = "用示例链接体验，无需更改默认浏览器。选中浏览器前不会打开网页。";
@@ -38,14 +37,13 @@
 "shortcut.navigate" = "移动并打开";
 "shortcut.copy" = "复制完整网址";
 "shortcut.cancel" = "关闭卡片，不打开链接";
-"browsers.manage" = "管理浏览器";
 "browsers.count" = "%d 个可见 · 发现 %d 个";
 "browsers.refresh" = "刷新";
 "browsers.instructions" = "将一行拖到另一个浏览器上方来调整顺序，也可以使用箭头按钮。前九个可见浏览器对应 ⌘1–9 快捷键。";
 "browsers.empty" = "未发现浏览器";
 "browsers.empty.description" = "安装并启动一个浏览器，然后刷新列表。";
 "browsers.hidden" = "已从选择卡片隐藏";
-"browsers.allHidden" = "所有浏览器均已隐藏，选择卡片仍会提供「复制网址」。";
+"browsers.allHidden" = "所有浏览器均已隐藏，在选择卡片中按 ⌘C 仍可复制网址。";
 "browsers.moveUp" = "上移";
 "browsers.moveDown" = "下移";
 "browsers.moveUpNamed" = "上移 %@";

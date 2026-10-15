@@ -26,10 +26,9 @@
 "welcome.done" = "Got It";
 "picker.title" = "Where to?";
 "picker.pending" = "%d links in queue";
-"picker.copy" = "Copy URL";
 "picker.cancel" = "Cancel all pending links";
 "picker.openIn" = "Open in %@";
-"picker.empty" = "No visible browsers. You can still copy the URL.";
+"picker.empty" = "No visible browsers. Press ⌘C to copy the URL.";
 "picker.preview" = "Preview the Picker";
 "picker.try" = "Try It";
 "picker.preview.description" = "Try an example link without changing your default browser. Nothing opens until you choose a browser.";
@@ -38,14 +37,13 @@
 "shortcut.navigate" = "Move and open";
 "shortcut.copy" = "Copy the complete URL";
 "shortcut.cancel" = "Dismiss without opening";
-"browsers.manage" = "Manage Browsers";
 "browsers.count" = "%d visible · %d discovered";
 "browsers.refresh" = "Refresh";
 "browsers.instructions" = "Drag a row onto another to place it before that browser, or use the arrows. The first nine visible browsers get ⌘1–9 shortcuts.";
 "browsers.empty" = "No browsers found";
 "browsers.empty.description" = "Install and launch a browser, then refresh this list.";
 "browsers.hidden" = "Hidden from the picker";
-"browsers.allHidden" = "All browsers are hidden. The picker will still offer Copy URL.";
+"browsers.allHidden" = "All browsers are hidden. Press ⌘C in the picker to copy the URL.";
 "browsers.moveUp" = "Move up";
 "browsers.moveDown" = "Move down";
 "browsers.moveUpNamed" = "Move %@ up";

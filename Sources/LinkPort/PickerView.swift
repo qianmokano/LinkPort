@@ -26,32 +26,26 @@ struct IssueBanner: View {
 
 struct PickerView: View {
     let model: LinkController
+    let inputState: PickerInputState
     let open: (String) -> Void
-    let copy: () -> Void
     let cancel: () -> Void
-    let settings: () -> Void
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 5)
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 7) {
-                Image(nsImage: NSApp.applicationIconImage).resizable().frame(width: 20, height: 20)
-                    .accessibilityHidden(true)
-                Text("LinkPort").fontWeight(.semibold)
-                Spacer()
-                if model.queue.count > 1 {
-                    Text(L10n.format("picker.pending", model.queue.count))
-                        .font(.caption).foregroundStyle(.secondary)
-                }
-                Button(action: cancel) { Image(systemName: "xmark").font(.callout.weight(.medium)) }
-                    .buttonStyle(.borderless).foregroundStyle(.secondary)
-                    .buttonBorderShape(.circle)
-                    .accessibilityLabel(L10n.text("picker.cancel"))
-            }
-            .font(.callout).padding(.bottom, 16)
-
             VStack(alignment: .leading, spacing: 6) {
-                Text(L10n.text("picker.title")).font(.title2.weight(.semibold))
+                HStack {
+                    Text(L10n.text("picker.title")).font(.title2.weight(.semibold))
+                    Spacer()
+                    if model.queue.count > 1 {
+                        Text(L10n.format("picker.pending", model.queue.count))
+                            .font(.caption).foregroundStyle(.secondary)
+                    }
+                    Button(action: cancel) { Image(systemName: "xmark").font(.callout.weight(.medium)) }
+                        .buttonStyle(.borderless).foregroundStyle(.secondary)
+                        .buttonBorderShape(.circle)
+                        .accessibilityLabel(L10n.text("picker.cancel"))
+                }
                 HStack(spacing: 7) {
                     Image(systemName: "link").foregroundStyle(.secondary)
                     Text(model.queue.current?.host ?? "").fontWeight(.medium).lineLimit(1)
@@ -68,7 +62,6 @@ struct PickerView: View {
                         VStack(spacing: 7) {
                             Image(systemName: "globe.badge.chevron.backward").font(.title2).foregroundStyle(.secondary)
                             Text(L10n.text("picker.empty")).font(.callout)
-                            Button(L10n.text("browsers.manage"), action: settings).buttonStyle(.link)
                         }.frame(maxWidth: .infinity).padding(.vertical, 10)
                     } else {
                         LazyVGrid(columns: columns, spacing: 6) {
@@ -83,7 +76,7 @@ struct PickerView: View {
                 .defaultScrollAnchor(.top)
                 .scrollEdgeEffectStyle(.soft, for: .vertical)
                 .onChange(of: model.selectedID) { _, id in
-                    if let id { proxy.scrollTo(id, anchor: .center) }
+                    if let id, !inputState.isPointerSelection { proxy.scrollTo(id, anchor: .center) }
                 }
             }
             .overlay {
@@ -94,18 +87,6 @@ struct PickerView: View {
 
             if let issue = model.issue { IssueBanner(issue: issue).padding(.top, 8) }
 
-            Divider().padding(.top, 12).padding(.bottom, 12)
-            HStack {
-                Button(action: copy) {
-                    Label(L10n.text("picker.copy"), systemImage: "doc.on.doc")
-                    Text("⌘C").foregroundStyle(.secondary)
-                }
-                .buttonStyle(.bordered).controlSize(.regular).disabled(model.isOpening)
-                Spacer()
-                Button(action: settings) { Image(systemName: "slider.horizontal.3") }
-                    .buttonStyle(.borderless).font(.body).foregroundStyle(.secondary)
-                    .help(L10n.text("settings.title")).accessibilityLabel(L10n.text("settings.title"))
-            }
         }
         .padding(20)
     }
@@ -126,6 +107,11 @@ struct PickerView: View {
             .contentShape(RoundedRectangle(cornerRadius: 16))
         }
         .buttonStyle(.plain).disabled(model.isOpening)
+        .onContinuousHover { phase in
+            guard case .active = phase, !model.isOpening,
+                  inputState.acceptPointerMovement(at: NSEvent.mouseLocation) else { return }
+            model.select(browser.id)
+        }
         .accessibilityLabel(L10n.format("picker.openIn", browser.name))
         .accessibilityHint(index < 9 ? "⌘\(index + 1)" : "")
         .accessibilityAddTraits(selected ? [.isSelected] : [])

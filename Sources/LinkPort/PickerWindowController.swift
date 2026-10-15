@@ -15,11 +15,31 @@ private final class PickerPanel: NSPanel {
 }
 
 @MainActor
+final class PickerInputState {
+    private(set) var isPointerSelection = false
+    private var lastPointerLocation: CGPoint?
+
+    func reset(at location: CGPoint) {
+        lastPointerLocation = location
+        isPointerSelection = false
+    }
+
+    func acceptPointerMovement(at location: CGPoint) -> Bool {
+        // Keyboard scrolling can move a browser under a stationary pointer.
+        guard lastPointerLocation != location else { return false }
+        lastPointerLocation = location
+        isPointerSelection = true
+        return true
+    }
+}
+
+@MainActor
 final class PickerWindowController: NSObject, NSWindowDelegate {
     private let model: LinkController
     private let openSettings: () -> Void
     private var panel: PickerPanel?
     private var isDismissing = false
+    private let inputState = PickerInputState()
 
     init(model: LinkController, openSettings: @escaping () -> Void) {
         self.model = model
@@ -32,10 +52,11 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         guard let panel else { return }
         if !panel.isVisible {
             let pointer = NSEvent.mouseLocation
+            inputState.reset(at: pointer)
             let screen = NSScreen.screens.first { $0.frame.contains(pointer) } ?? NSScreen.main
             let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
             let rows = min(max(Int(ceil(Double(model.visibleBrowsers.count) / 5.0)), 1), 2)
-            let height = CGFloat(224 + rows * 112)
+            let height = CGFloat(132 + rows * 112)
             panel.setFrame(PickerGeometry.frame(size: CGSize(width: 474, height: height), pointer: pointer, visibleFrame: visible), display: true)
         }
         NSApp.activate()
@@ -72,10 +93,9 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         panel.handleKey = { [weak self] event in self?.handleKey(event) ?? false }
         let content = NSHostingView(rootView: PickerView(
             model: model,
+            inputState: inputState,
             open: { [weak self] id in self?.open(id) },
-            copy: { [weak self] in self?.copyLink() },
-            cancel: { [weak self] in self?.cancel() },
-            settings: { [weak self] in self?.cancel(); self?.openSettings() }
+            cancel: { [weak self] in self?.cancel() }
         ))
         let glass = NSGlassEffectView()
         glass.style = .regular
@@ -88,6 +108,7 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
 
     private func open(_ id: String? = nil) {
         guard !model.isOpening else { return }
+        inputState.reset(at: NSEvent.mouseLocation)
         Task {
             await model.open(id)
             present()
@@ -95,6 +116,7 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
     }
 
     private func copyLink() {
+        inputState.reset(at: NSEvent.mouseLocation)
         model.copyCurrent()
         present()
     }
@@ -112,6 +134,9 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
             }
         }
         guard modifiers.isEmpty else { return false }
+        if [123, 124, 125, 126].contains(event.keyCode) {
+            inputState.reset(at: NSEvent.mouseLocation)
+        }
         switch event.keyCode {
         case 53: cancel()
         case 36, 76: open()
