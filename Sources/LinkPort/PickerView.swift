@@ -60,24 +60,29 @@ struct PickerView: View {
                     .accessibilityLabel(model.queue.current?.absoluteString ?? "")
             }.frame(maxWidth: .infinity, alignment: .leading).padding(.bottom, 16)
 
-            ScrollView {
-                if model.visibleBrowsers.isEmpty {
-                    VStack(spacing: 7) {
-                        Image(systemName: "globe.badge.chevron.backward").font(.title2).foregroundStyle(.secondary)
-                        Text(L10n.text("picker.empty")).font(.callout)
-                        Button(L10n.text("browsers.manage"), action: settings).buttonStyle(.link)
-                    }.frame(maxWidth: .infinity).padding(.vertical, 10)
-                } else {
-                    LazyVGrid(columns: columns, spacing: 6) {
-                        ForEach(Array(model.visibleBrowsers.enumerated()), id: \.element.id) { index, browser in
-                            browserButton(browser, index: index)
-                                .id(browser.id)
-                        }
-                    }.padding(2)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    if model.visibleBrowsers.isEmpty {
+                        VStack(spacing: 7) {
+                            Image(systemName: "globe.badge.chevron.backward").font(.title2).foregroundStyle(.secondary)
+                            Text(L10n.text("picker.empty")).font(.callout)
+                            Button(L10n.text("browsers.manage"), action: settings).buttonStyle(.link)
+                        }.frame(maxWidth: .infinity).padding(.vertical, 10)
+                    } else {
+                        LazyVGrid(columns: columns, spacing: 6) {
+                            ForEach(Array(model.visibleBrowsers.enumerated()), id: \.element.id) { index, browser in
+                                browserButton(browser, index: index)
+                                    .id(browser.id)
+                            }
+                        }.padding(2)
+                    }
+                }
+                .scrollIndicators(.hidden)
+                .defaultScrollAnchor(.top)
+                .onChange(of: model.selectedID) { _, id in
+                    if let id { proxy.scrollTo(id, anchor: .center) }
                 }
             }
-            .scrollIndicators(.hidden)
-            .defaultScrollAnchor(.top)
             .overlay {
                 if model.isOpening {
                     ProgressView().controlSize(.small).padding(14).background(.regularMaterial, in: Circle())
@@ -120,7 +125,6 @@ struct PickerView: View {
             .contentShape(RoundedRectangle(cornerRadius: 12))
         }
         .buttonStyle(.plain).disabled(model.isOpening)
-        .onHover { hovering in if hovering { model.select(browser.id) } }
         .accessibilityLabel(L10n.format("picker.openIn", browser.name))
         .accessibilityHint(index < 9 ? "⌘\(index + 1)" : "")
         .accessibilityAddTraits(selected ? [.isSelected] : [])

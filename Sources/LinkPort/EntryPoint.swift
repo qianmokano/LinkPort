@@ -24,6 +24,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var statusItem: NSStatusItem?
     private var settingsWindow: NSWindow?
     private var receivedLink = false
+    private var lastLinkReceipt = Date.distantPast
     private var launchCompleted = false
     private var refreshObserver: NSObjectProtocol?
 
@@ -47,6 +48,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
             }
         }
         if model.queue.current != nil { picker.present() }
+        else if receivedLink { showSettings() }
         // The URL event for a cold launch can arrive just after didFinishLaunching.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { [weak self] in
             guard let self, !self.receivedLink else { return }
@@ -56,6 +58,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     func application(_ application: NSApplication, open urls: [URL]) {
         receivedLink = true
+        lastLinkReceipt = Date()
         model.receive(urls)
         if launchCompleted {
             if model.queue.current != nil { picker.present() } else { showSettings() }
@@ -65,7 +68,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         // Reopen can precede an incoming URL on a running accessory app.
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [weak self] in
-            guard let self, self.model.queue.current == nil else { return }
+            guard let self, self.model.queue.current == nil,
+                  Date().timeIntervalSince(self.lastLinkReceipt) > 0.5 else { return }
             self.showSettings()
         }
         return false
@@ -132,7 +136,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
 
     private func showSettings() {
         if model.isOpening { return }
-        picker.cancel()
+        if model.queue.current != nil { picker.cancel() }
         model.refresh()
         if settingsWindow == nil {
             let window = NSWindow(contentRect: NSRect(x: 0, y: 0, width: 780, height: 580),
