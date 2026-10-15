@@ -1,75 +1,102 @@
 # LinkPort
 
-原生 macOS 菜单栏浏览器选择器。外部应用打开网站时，在鼠标附近选择浏览器，或者只复制网址。
+**A choice for every link.** A native macOS menu bar utility that lets you choose a browser when another app opens a website—or copy the URL instead.
 
-支持 **macOS 26+、Apple Silicon 和 Intel**。使用 SwiftUI + AppKit，无第三方依赖。
+[简体中文](README.zh-CN.md) · [Contributing](CONTRIBUTING.md) · [Development](docs/development.md) · [MIT license](LICENSE)
 
-## 构建与安装
+![LinkPort showing browser choices for an example URL](docs/images/picker.png)
 
-需要 Xcode 27 或更新版本，包含 macOS 27 SDK、Swift 6.4 和分层图标编译器。应用仍支持在 macOS 26 及更新系统上运行。
+## Features
+
+- Choose from installed browsers in a compact picker near the pointer.
+- Open HTTP/HTTPS links and local HTML/XHTML files passed to the system default browser.
+- Copy the complete URL with `⌘C`, preserving encoding, query parameters, and fragments.
+- Reorder or hide browsers; handle multiple links one at a time.
+- Navigate with the keyboard, use multiple displays, and follow the system's appearance.
+- Switch between English, Simplified Chinese, and the system language immediately.
+- Keep preferences on your Mac, with no accounts, analytics, or browsing history.
+
+LinkPort uses SwiftUI and AppKit and has no third-party runtime dependencies.
+
+## Requirements and availability
+
+| | Requirement |
+| --- | --- |
+| Run | macOS 26 or later; Apple Silicon or Intel |
+| Build | Xcode 27 or later with the macOS 27 SDK and Swift 6.4 or later |
+| Full checks | The build tools above and Python 3.9 or later (standard library only) |
+
+**Version 1.0.0 is not released yet.** Build from source for now. The build script creates an **ad-hoc signed development app**, without Developer ID signing or Apple notarization. See the [release guide](docs/releasing.md) for public distribution requirements.
+
+Apple Silicon on macOS 27 has been exercised locally. Intel has been cross-compiled and launched under Rosetta; Intel hardware and macOS 26 still need device testing. See [testing and compatibility](docs/testing.md).
+
+## Build and install
+
+Download or check out the source, open a terminal in the project directory, and run:
 
 ```sh
 ./scripts/build-app.sh
-open dist/LinkPort.app
 ```
 
-脚本分别编译 arm64、x86_64，合并 Universal 二进制，通过 `actool` 编译 Icon Composer 分层图标并进行本机 ad-hoc 签名。最终产物位于 `dist/LinkPort.app`，同时生成便于复制的 `dist/LinkPort.zip`。也可以用 Xcode 打开 `Package.swift` 浏览和编辑源码；注册为默认浏览器时必须运行完整 `.app`，不能只使用 `swift run`。
+The output is `dist/LinkPort.app`, `dist/LinkPort.zip`, and `dist/SHA256SUMS`. Drag the app into `/Applications` or `~/Applications`, then launch that installed copy. Double-clicking LinkPort opens Settings.
 
-建议把 `LinkPort.app` 拖至 `/Applications` 或 `~/Applications` 后再启动，在「通用」页点击「设为默认浏览器」并接受 macOS 的确认。应用会检查 HTTP 和 HTTPS 两种处理器状态。也可以在「系统设置 → 桌面与程序坞 → 默认网页浏览器」手动选择 LinkPort。
+The scripts use an installed `/Applications/Xcode.app` when Command Line Tools is selected. For another Xcode location, set `DEVELOPER_DIR` to that app's `Contents/Developer` directory. The global developer-tool selection is left alone.
 
-本机签名用于本机使用，当前产物没有 Developer ID 签名和 Apple 公证，不能作为面向其他用户的正式发行包。
+In **Settings → General**, click **Set as Default Browser** and accept macOS's confirmation. You can also choose LinkPort in **System Settings → Desktop & Dock → Default web browser**. Both HTTP and HTTPS must point to LinkPort. A complete `.app` bundle is required; `swift run` is not an installation method.
 
-## 使用
+To try the picker first, click **Try It** in General settings. The preview uses an example URL and opens nothing until you select a browser.
 
-- 点击邮件、终端或其他应用中交给系统默认浏览器的 HTTP/HTTPS 链接，鼠标附近会出现选择卡片。
-- macOS 交给默认浏览器的本地 HTML/XHTML 文件也会显示选择卡片，可选择浏览器或复制文件网址。
-- 点击浏览器打开，按 `⌘C` 只复制；路径、查询参数、百分号编码和片段均保留。
-- 选择卡片仅显示网址和浏览器，鼠标移到浏览器上会更新选中态。卡片不显示品牌顶栏、复制按钮或设置入口；设置从菜单栏打开。
-- `⌘1–9` 直接选择前九个可见浏览器；方向键移动，回车打开；`⌘C` 复制；`Esc` 或点击外部取消。
-- 多条链接逐条排队，选择或复制后处理下一条。仍在队列中的相同网址合并；取消会清空整个待处理队列。
-- 从菜单栏打开「设置」，在「浏览器」页调整顺序或切换启用状态。启用的浏览器始终在前；开启时移到启用组末尾，关闭时移到未启用组开头。拖动和上下箭头只调整组内顺序，新发现的应用追加到启用组末尾。拖动时停留在列表上下边缘可持续滚动。
-- 「预览选择卡片」可在不更改默认浏览器的情况下体验功能。
-- 双击应用会打开设置。关闭设置窗口后菜单栏仍保留；退出后，下一次系统交来链接时应用会自动启动。不自动配置登录启动。
+## Using LinkPort
 
-卡片支持多屏幕定位、浅色/深色外观、键盘导航及辅助功能标签。在「设置 → 通用 → 语言」中可选择跟随系统、简体中文或 English；切换立即生效并保留到下次启动。默认跟随系统，未匹配到支持的语言时回退至英文。
+Click a link in another app, then choose a browser. LinkPort can only handle links the app sends through the system default browser; embedded web views and links explicitly directed to a particular browser remain with that app.
 
-## macOS 27 设计
+| Shortcut | Action |
+| --- | --- |
+| `⌘1`–`⌘9` | Open in one of the first nine visible browsers |
+| `←` `↑` `↓` `→`, then `Return` | Select a browser and open |
+| `⌘C` | Copy the complete URL to the system clipboard |
+| `Esc` or click outside | Cancel all pending links |
 
-选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
+Multiple links are queued in order. Duplicate URLs still in the queue are merged. Opening or copying advances to the next link; cancelling clears the queue.
 
-应用图标源文件为 `Configuration/LinkPort.icon`，可在 Apple Icon Composer 中编辑。深色渐变背景和分叉符号独立保存，系统为符号渲染 Liquid Glass 材质、阴影和高光。构建时生成分层 `Assets.car` 与兼容的 `LinkPort.icns`，并通过 `CFBundleIconName` 注册图标。
+Open **Settings** from the menu bar to change browser order and visibility. Enabled browsers stay first. Drag or use the arrow buttons within each group; hold a dragged row near the list's top or bottom edge to scroll. Enabling a browser moves it to the end of the enabled group; disabling it moves it to the start of the hidden group. Newly discovered browsers are appended to the enabled group.
 
-设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List + .onMove` 和标准按钮、开关。列表负责原生拖动和落位后保存顺序，轻量适配层将底层表格的插入反馈设为 `.gap`，让系统在拖动中留出空隙、移动其他行。也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
+LinkPort stays in the menu bar when Settings closes. After quitting, macOS can launch it again to handle the next link. Login launch is not configured automatically.
 
-边缘滚动只监听原生拖动来源会话，在拖动期间持续读取指针位置，在列表顶部或底部 48 pt 范围内通过轻量的 `NSScrollView` 适配层连续滚动。列表内容、拖动手势及落点提交仍由 SwiftUI 管理。计时器加入公共运行循环模式，以便在 macOS 原生拖动期间继续工作；离开边缘即停止滚动，松手、结束拖动或关闭页面时销毁计时器。
+<details>
+<summary>General settings</summary>
 
-实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[原生空隙插入反馈](https://developer.apple.com/documentation/appkit/nstableview/draggingdestinationfeedbackstyle-swift.enum/gap)。
+![LinkPort General settings in English](docs/images/settings.png)
 
-## 恢复默认浏览器与卸载
+</details>
 
-先在系统设置中把默认网页浏览器改回 Safari 或其他浏览器，再退出 LinkPort 并删除应用。偏好保存在 `com.linkport.app` 的 UserDefaults 中；网址不会写入偏好或日志。运行期间尚未处理的网址只在内存中保存。
+Screenshots show the actual app on macOS 27 using an example URL. Browser availability and appearance vary by Mac.
 
-## 测试
+## Privacy and scope
+
+LinkPort itself makes no network requests and stores no URL history. Pending URLs live in memory until handled or cancelled. Only browser order, visibility, language, and the welcome preference are saved in UserDefaults under `com.linkport.app`. Choosing a browser passes the URL to that browser; `⌘C` puts it on the system clipboard.
+
+Browser discovery uses macOS's registered HTTP/HTTPS handlers, so other link routers may appear too; hide them if needed. Supported local files are `.html`, `.htm`, `.xhtml`, and `.xht`. Remote file hosts, other file types, and custom URL schemes are outside the current scope. Site rules, browser profiles, sync, extensions, and automatic updates are not included.
+
+## Restore your browser or uninstall
+
+Choose Safari or another browser as the default in System Settings first. Then quit LinkPort and remove the app. To also reset its preferences, run the following **after quitting**:
 
 ```sh
-./scripts/test.sh
-lipo -archs dist/LinkPort.app/Contents/MacOS/LinkPort
-codesign --verify --strict dist/LinkPort.app
-open -a "$PWD/dist/LinkPort.app" 'https://example.com/path?x=1&next=%2Fwork#section'
+defaults delete com.linkport.app
 ```
 
-自动化测试使用可替换的系统服务和独立 UserDefaults，覆盖链接校验、队列去重、参数保留、排序隐藏、偏好、取消竞态、打开/复制失败和默认处理器拒绝。AppKit 回归测试另行覆盖菜单更新和设置展示时序，窗口展示使用替身，不改变真实焦点。
+## Development and community
 
-构建和测试脚本在必要时仅为当前进程选择已安装的 `/Applications/Xcode.app`，不会修改全局开发工具配置。Xcode 安装在其他位置时，可通过 `DEVELOPER_DIR` 指向它的 Developer 目录；构建分层图标需要完整 Xcode。
+```sh
+./scripts/test.sh    # Swift tests, with coverage
+./scripts/check.sh   # All checks, including the Universal build
+```
 
-UI 与系统集成的人工验证清单及本机构建结果见 [VALIDATION.md](VALIDATION.md)。Intel 构建成功不等同于 Intel 真机运行测试。
+Read the [development guide](docs/development.md), [test matrix](docs/testing.md), and [contribution guide](CONTRIBUTING.md). Issues and pull requests may be written in English or Chinese. Follow the [code of conduct](CODE_OF_CONDUCT.md); security reports follow the [security policy](SECURITY.md).
 
-## 结构与边界
+The repository is currently prepared locally. Private reporting and hosted CI will be verified when a public repository is established; there is no published download or CI status to link to yet.
 
-- `LinkPortCore`：可测试的队列、浏览器目录、偏好、状态控制及窗口定位计算。
-- `LinkPort`：AppKit 系统适配、菜单栏、SwiftUI 设置及选择卡片，中英文本地化。
-- `scripts` / `Configuration`：双架构构建、图标生成和应用元数据。
+## License
 
-浏览器列表来自系统注册的 HTTP/HTTPS 处理应用，因此其他链接路由器也可能出现在列表中，可手动隐藏。LinkPort 自身始终排除。应用内嵌网页、明确指定其他浏览器的打开操作、自定义 URL 协议、远程文件网址和其他本地文件类型不在接管范围内。
-
-首版不包含网站规则、Profile、浏览历史、远程分析、同步、浏览器扩展或自动更新。
+LinkPort's code, documentation, and original branch artwork are available under the [MIT License](LICENSE), copyright © 2026 qianmokano. Browser icons displayed by macOS remain the property of their respective owners.
