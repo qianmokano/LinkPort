@@ -1,0 +1,51 @@
+name: Bug report / 问题报告
+description: Report a reproducible problem. English or Chinese is welcome.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use example URLs and redact private data. Do not post security vulnerabilities here; read SECURITY.md first.
+        请使用示例网址并移除私人数据。安全漏洞请先阅读 SECURITY.md，不要公开细节。
+  - type: input
+    id: version
+    attributes:
+      label: App version or commit / 应用版本或提交
+      description: Include whether this is a source build.
+    validations:
+      required: true
+  - type: input
+    id: macos
+    attributes:
+      label: macOS version / 系统版本
+    validations:
+      required: true
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture / 架构
+      options:
+        - Apple Silicon (native)
+        - Intel hardware
+        - Apple Silicon (Rosetta)
+        - Unknown / 不确定
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce / 复现步骤
+      description: Include the source app and destination browser when relevant. Use https://example.com instead of private links.
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: Expected and actual behavior / 预期及实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or diagnostics / 截图或诊断信息
+      description: Optional. Remove tokens, private URLs, usernames, and unrelated personal information.
