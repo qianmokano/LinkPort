@@ -20,7 +20,9 @@ Reports are under `.build/reports/`. The coverage gate is **80% line coverage of
 
 ## Current verification record
 
-Local baseline, 2026-10-15: macOS 27.0.1, Apple Silicon, Xcode 27.0, Swift 6.4. Before the open-source preparation, all 37 Swift tests passed and core line coverage was 99.35% (306/308). The preparation adds 11 tooling tests and retains the same app behavior. Final preparation checks and clean-checkout results are recorded below after execution.
+Local verification on 2026-10-15: macOS 27.0.1, Apple Silicon, Xcode 27.0, Swift 6.4. `./scripts/check.sh` passed in the working checkout and in a fresh local clone of commit `0078d0c`, without copying build artifacts or ignored files. All **37 Swift tests and 11 tooling tests passed**. LinkPortCore line coverage was **99.35% (306/308)**.
+
+Both release architectures compiled from scratch with a macOS 26 deployment target. The app's browser registration, icon resources, English/Chinese catalogs, MIT license, signature, ZIP contents, and SHA-256 manifest passed validation. The Swift Testing XML contains 37 test cases. Shell syntax checks, YAML parsing, local documentation links, and actionlint 1.7.12 also passed; the actionlint configuration explicitly permits GitHub's documented Xcode 27 preview label. The app sources, public APIs, package manifest, preferences, and application metadata are unchanged by this preparation.
 
 Hosted CI has not run: no remote repository is configured. Signing is ad-hoc; no notarization or public release is claimed.
 
@@ -38,6 +40,12 @@ Hosted CI has not run: no remote repository is configured. Signing is ad-hoc; no
 | Appearance and accessibility | Light-mode screenshots checked; full dark-mode and VoiceOver workflows pending |
 
 Historical notes record exploratory work, superseded approaches, and earlier test counts. They provide context, not additional claims of current coverage.
+
+## Publication hygiene review
+
+The 2026-10-15 review covered 50 tracked text files (52 tracked files including two screenshots) and a pattern scan of 137 reachable historical text blobs at baseline `09285e5`. No common GitHub/AWS credential patterns, private-key headers, or personal home-directory paths were found. Email-like strings in test content use `example.com`. Git author metadata contains one non-noreply address; it was preserved, not promoted to a contact address. The [publication guide](releasing.md) records the required author-metadata review before making history public.
+
+Both screenshots were visually checked: they show the app's example URL or General settings, and contain no PNG text-metadata chunks. The original app language and settings page were restored after capture. These targeted checks are preparation evidence, not a guarantee that every possible secret format has been detected.
 
 ## Manual release checklist
 
