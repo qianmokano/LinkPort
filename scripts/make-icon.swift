@@ -20,8 +20,7 @@ func render(pixels: Int) throws -> Data {
     let scale = CGFloat(pixels) / 1024
     context.cgContext.scaleBy(x: scale, y: scale)
     let background = NSBezierPath(roundedRect: NSRect(x: 64, y: 64, width: 896, height: 896), xRadius: 205, yRadius: 205)
-    NSGradient(starting: NSColor(srgbRed: 0.06, green: 0.72, blue: 0.70, alpha: 1),
-               ending: NSColor(srgbRed: 0.02, green: 0.30, blue: 0.43, alpha: 1))?.draw(in: background, angle: -70)
+    NSGradient(starting: .white, ending: .black)?.draw(in: background, angle: -70)
     NSColor.white.withAlphaComponent(0.18).setStroke()
     background.lineWidth = 3
     background.stroke()
