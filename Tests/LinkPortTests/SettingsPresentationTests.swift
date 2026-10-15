@@ -69,14 +69,22 @@ private final class SettingsFixture {
 struct SettingsPresentationTests {
     @Test func menuUpdatesBeforeTrackingAndReflectsDefaultStatus() {
         let fixture = SettingsFixture()
+        #expect(fixture.menu.items.first?.title == L10n.text("status.notDefault"))
         #expect(fixture.menu.items.contains { $0.keyEquivalent == "," && $0.isEnabled })
         #expect(fixture.menu.items.contains { $0.title == L10n.text("default.make") })
 
         fixture.system.handlers = DefaultHandlers(http: fixture.model.bundleID, https: fixture.model.bundleID)
         fixture.updateMenu()
-        #expect(fixture.menu.items.first?.title == L10n.text("status.default"))
+        #expect(fixture.menu.items.first?.keyEquivalent == ",")
+        #expect(!fixture.menu.items.contains { $0.title == L10n.text("status.default") })
+        #expect(!fixture.menu.items.contains { $0.title == L10n.text("status.notDefault") })
         #expect(!fixture.menu.items.contains { $0.title == L10n.text("default.make") })
         #expect(fixture.menu.items.filter { $0.keyEquivalent == "," }.count == 1)
+
+        fixture.system.handlers = DefaultHandlers(http: fixture.model.bundleID, https: "other.browser")
+        fixture.updateMenu()
+        #expect(fixture.menu.items.first?.title == L10n.text("status.notDefault"))
+        #expect(fixture.menu.items.contains { $0.title == L10n.text("default.make") })
     }
 
     @Test func oneSelectionPresentsAfterMenuActionAndReusesWindow() async throws {

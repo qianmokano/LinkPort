@@ -99,11 +99,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     func menuNeedsUpdate(_ menu: NSMenu) {
         model.refresh()
         menu.removeAllItems()
-        let state = NSMenuItem(title: L10n.text(model.isDefault ? "status.default" : "status.notDefault"), action: nil, keyEquivalent: "")
-        state.image = NSImage(systemSymbolName: model.isDefault ? "checkmark.circle.fill" : "circle.dashed", accessibilityDescription: nil)
-        menu.addItem(state)
-        if !model.isDefault { addItem("default.make", action: #selector(makeDefault), to: menu) }
-        menu.addItem(.separator())
+        if !model.isDefault {
+            let state = NSMenuItem(title: L10n.text("status.notDefault"), action: nil, keyEquivalent: "")
+            state.image = NSImage(systemSymbolName: "circle.dashed", accessibilityDescription: nil)
+            menu.addItem(state)
+            addItem("default.make", action: #selector(makeDefault), to: menu)
+            menu.addItem(.separator())
+        }
         addItem("settings.title", action: #selector(openSettings), key: ",", to: menu)
         addItem("picker.preview", action: #selector(previewPicker), to: menu)
         menu.addItem(.separator())
