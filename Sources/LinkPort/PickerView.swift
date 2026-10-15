@@ -26,12 +26,14 @@ struct IssueBanner: View {
 
 struct PickerView: View {
     static let columnCount = 4
+    static let browserCardHeight: CGFloat = 100
+    static let browserCardSpacing: CGFloat = 6
 
     let model: LinkController
     let inputState: PickerInputState
     let open: (String) -> Void
     let cancel: () -> Void
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: PickerView.columnCount)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: PickerView.browserCardSpacing), count: PickerView.columnCount)
 
     var body: some View {
         VStack(spacing: 0) {
@@ -66,7 +68,7 @@ struct PickerView: View {
                             Text(L10n.text("picker.empty")).font(.callout)
                         }.frame(maxWidth: .infinity).padding(.vertical, 10)
                     } else {
-                        LazyVGrid(columns: columns, spacing: 6) {
+                        LazyVGrid(columns: columns, spacing: Self.browserCardSpacing) {
                             ForEach(Array(model.visibleBrowsers.enumerated()), id: \.element.id) { index, browser in
                                 browserButton(browser, index: index)
                                     .id(browser.id)
@@ -100,14 +102,14 @@ struct PickerView: View {
         return Button { open(browser.id) } label: {
             VStack(spacing: 4) {
                 BrowserIcon(browser: browser, size: 48)
-                VStack(spacing: 2) {
-                    Text(browser.name).font(.caption).lineLimit(2).multilineTextAlignment(.center)
-                    Text(index < 9 ? "⌘\(index + 1)" : " ")
-                        .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
-                }
-                .frame(height: 42, alignment: .top)
+                Text(browser.name).font(.caption).lineLimit(1).truncationMode(.tail)
+                    .help(browser.name)
+                Text(index < 9 ? "⌘\(index + 1)" : " ")
+                    .font(.system(size: 10, design: .monospaced)).foregroundStyle(.secondary)
             }
-            .frame(maxWidth: .infinity).padding(.vertical, 8)
+            .padding(8)
+            .frame(maxWidth: .infinity)
+            .frame(height: Self.browserCardHeight)
             .background(selected ? Color.gray.opacity(0.18) : .clear, in: RoundedRectangle(cornerRadius: 16))
             .contentShape(RoundedRectangle(cornerRadius: 16))
         }

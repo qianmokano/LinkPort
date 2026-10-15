@@ -56,7 +56,8 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
             let screen = NSScreen.screens.first { $0.frame.contains(pointer) } ?? NSScreen.main
             let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
             let rows = min(max(Int(ceil(Double(model.visibleBrowsers.count) / Double(PickerView.columnCount))), 1), 2)
-            let height = CGFloat(132 + rows * 112)
+            let height = 124 + CGFloat(rows) * PickerView.browserCardHeight
+                + CGFloat(rows - 1) * PickerView.browserCardSpacing
             panel.setFrame(PickerGeometry.frame(size: CGSize(width: 474, height: height), pointer: pointer, visibleFrame: visible), display: true)
         }
         NSApp.activate()
