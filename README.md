@@ -26,7 +26,7 @@ open dist/LinkPort.app
 - 选择卡片仅显示网址和浏览器，鼠标移到浏览器上会更新选中态。卡片不显示品牌顶栏、复制按钮或设置入口；设置从菜单栏打开。
 - `⌘1–9` 直接选择前九个可见浏览器；方向键移动，回车打开；`⌘C` 复制；`Esc` 或点击外部取消。
 - 多条链接逐条排队，选择或复制后处理下一条。仍在队列中的相同网址合并；取消会清空整个待处理队列。
-- 从菜单栏打开「设置」，在「浏览器」页拖动排序、使用上下箭头调整位置，或隐藏/恢复浏览器。新发现的应用追加到已有顺序之后。
+- 从菜单栏打开「设置」，在「浏览器」页调整顺序或切换启用状态。启用的浏览器始终在前；开启时移到启用组末尾，关闭时移到未启用组开头。拖动和上下箭头只调整组内顺序，新发现的应用追加到启用组末尾。拖动时停留在列表上下边缘可持续滚动。
 - 「预览选择卡片」可在不更改默认浏览器的情况下体验功能。
 - 双击应用会打开设置。关闭设置窗口后菜单栏仍保留；退出后，下一次系统交来链接时应用会自动启动。不自动配置登录启动。
 
@@ -37,6 +37,8 @@ open dist/LinkPort.app
 选择卡片使用 AppKit 原生 `NSGlassEffectView`，在 macOS 27 启用新增的交互玻璃反馈；在 macOS 26 使用标准玻璃材质。系统负责透明度、背景融合和辅助功能适配。
 
 设置窗口使用 `NSTabViewController` 的工具栏分页；通用和关于页采用 SwiftUI 分组 `Form`，浏览器页采用 SwiftUI `List` 和标准按钮、开关。macOS 27 使用 `reorderable + reorderContainer`，按系统重排接口提供拖动中的占位空隙及行让位；macOS 26 保留 `.onMove` 兼容路径。松手后按浏览器 ID 保存新顺序，也可以通过行内箭头按钮或辅助功能移动动作调整顺序。字体、强调色和滚动边缘均跟随系统；设置页标题跟随当前分页，窗口采用原生偏好设置样式。拖动动画的实机验收状态见 [验证记录](VALIDATION.md)。
+
+边缘滚动监听原生拖放会话，在列表顶部或底部 48 pt 范围内通过轻量的 `NSScrollView` 适配层持续滚动，列表内容及重排仍由 SwiftUI 管理。计时器加入公共运行循环模式，以便在 macOS 原生拖动期间继续工作；离开边缘、结束拖动或关闭页面即停止。
 
 实现依据：[Apple 设置窗口规范](https://developer.apple.com/design/human-interface-guidelines/settings)、[采用 Liquid Glass](https://developer.apple.com/documentation/technologyoverviews/adopting-liquid-glass)、[NSGlassEffectView](https://developer.apple.com/documentation/appkit/nsglasseffectview)、[SwiftUI 原生占位重排](https://developer.apple.com/documentation/swiftui/reordering-items-in-lists-stacks-grids-and-custom-layouts)。
 
