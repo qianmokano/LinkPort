@@ -25,11 +25,13 @@ struct IssueBanner: View {
 }
 
 struct PickerView: View {
+    static let columnCount = 4
+
     let model: LinkController
     let inputState: PickerInputState
     let open: (String) -> Void
     let cancel: () -> Void
-    private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: 5)
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 4), count: PickerView.columnCount)
 
     var body: some View {
         VStack(spacing: 0) {

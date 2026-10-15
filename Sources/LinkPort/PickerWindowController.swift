@@ -55,7 +55,7 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
             inputState.reset(at: pointer)
             let screen = NSScreen.screens.first { $0.frame.contains(pointer) } ?? NSScreen.main
             let visible = screen?.visibleFrame ?? NSRect(x: 0, y: 0, width: 1280, height: 800)
-            let rows = min(max(Int(ceil(Double(model.visibleBrowsers.count) / 5.0)), 1), 2)
+            let rows = min(max(Int(ceil(Double(model.visibleBrowsers.count) / Double(PickerView.columnCount))), 1), 2)
             let height = CGFloat(132 + rows * 112)
             panel.setFrame(PickerGeometry.frame(size: CGSize(width: 474, height: height), pointer: pointer, visibleFrame: visible), display: true)
         }
@@ -150,8 +150,8 @@ final class PickerWindowController: NSObject, NSWindowDelegate {
         case 36, 76: open()
         case 123: model.moveSelection(by: -1)
         case 124: model.moveSelection(by: 1)
-        case 125: model.moveSelection(by: 5)
-        case 126: model.moveSelection(by: -5)
+        case 125: model.moveSelection(by: PickerView.columnCount)
+        case 126: model.moveSelection(by: -PickerView.columnCount)
         default: return false
         }
         return true
