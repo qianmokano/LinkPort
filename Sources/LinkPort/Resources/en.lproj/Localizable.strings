@@ -42,7 +42,7 @@
 "shortcut.cancel" = "Dismiss without opening";
 "browsers.count" = "%d visible · %d discovered";
 "browsers.refresh" = "Refresh";
-"browsers.instructions" = "Drag a row to a new position, or use the arrows. The first nine visible browsers get ⌘1–9 shortcuts.";
+"browsers.instructions" = "Press and hold a row, then drag it to a new position, or use the arrows. The first nine visible browsers get ⌘1–9 shortcuts.";
 "browsers.empty" = "No browsers found";
 "browsers.empty.description" = "Install and launch a browser, then refresh this list.";
 "browsers.hidden" = "Hidden from the picker";
