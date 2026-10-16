@@ -50,18 +50,14 @@ To try the picker first, click **Try It** in General settings. The preview uses 
 
 The current package has an ad-hoc signature, without Developer ID signing or Apple notarization. After downloading it, macOS may report that the developer cannot be verified or that Apple cannot check the app for malicious software.
 
-Continue only if you trust the download source. When a ZIP and `SHA256SUMS` are provided together, check them from the directory containing both files:
-
-```sh
-shasum -a 256 -c SHA256SUMS
-```
+Continue only if you trust the download source.
 
 1. Extract the ZIP, move `LinkPort.app` into Applications, and try opening it once.
 2. If macOS blocks it, dismiss the alert, then go to **System Settings → Privacy & Security**.
 3. Scroll to **Security**, find the message about LinkPort, and click **Open Anyway**.
 4. Review the next confirmation and click **Open** if you want to proceed. macOS saves an exception for the app.
 
-On a managed Mac, this option may be restricted by your administrator. If the alert says the app is damaged or will damage your computer, stop and re-download, verify the checksum, or contact the maintainer rather than treating it as an unidentified-developer alert. See [Apple's instructions](https://support.apple.com/en-us/102445).
+On a managed Mac, this option may be restricted by your administrator. If the alert says the app is damaged or will damage your computer, stop and re-download or contact the maintainer rather than treating it as an unidentified-developer alert. See [Apple's instructions](https://support.apple.com/en-us/102445).
 
 #### Terminal alternative
 
