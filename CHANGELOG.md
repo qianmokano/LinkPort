@@ -1,8 +1,8 @@
 # Changelog
 
-User-visible changes are recorded here. Versions follow Semantic Versioning; repository tags will use `vMAJOR.MINOR.PATCH`. The app version currently reads 1.0.0, but no release has been published.
+User-visible changes are recorded here. Versions follow Semantic Versioning; repository tags use `vMAJOR.MINOR.PATCH`.
 
-## Unreleased — 1.0.0
+## 1.0.0 — 2026-10-15
 
 ### Added
 
@@ -11,7 +11,7 @@ User-visible changes are recorded here. Versions follow Semantic Versioning; rep
 - Browser visibility and grouped reordering with drag, arrow controls, and edge scrolling.
 - English and Simplified Chinese localization with an immediate language preference.
 - Native glass picker, settings tabs, and a layered Icon Composer app icon.
-- Universal arm64/x86_64 development packaging, MIT licensing, contribution documentation, and local/CI checks.
+- Universal arm64/x86_64 packaging, MIT licensing, contribution documentation, and local/CI checks.
 
 ### Fixed
 
@@ -24,4 +24,4 @@ User-visible changes are recorded here. Versions follow Semantic Versioning; rep
 ### Validation limits
 
 - Intel hardware, macOS 26 devices, full VoiceOver coverage, and some display/drag scenarios remain unverified. See the [test matrix](docs/testing.md).
-- Current app packages use ad-hoc signing and are not notarized public releases.
+- This community release retains ad-hoc signing, without Developer ID signing or Apple notarization. Gatekeeper may require the first-launch steps in the README.

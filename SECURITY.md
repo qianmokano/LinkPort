@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-LinkPort 1.0.0 is currently unreleased. Security fixes are made on the current `main` branch. There are no supported published release lines yet; this policy will be updated when releases begin.
+The latest release in the **1.0.x** line is supported. Security fixes are developed on `main` and included in a patch release when needed. Use the latest available patch version when reporting a vulnerability.
 
 ## Reporting a vulnerability
 
@@ -18,4 +18,4 @@ LinkPort receives URLs through macOS and passes a chosen URL to an installed bro
 
 Browser order, visibility, language, and the welcome preference are stored locally. Automated tests use replacement services and isolated preferences. Default-browser changes and system consent remain explicit user actions.
 
-Community packages retain ad-hoc signing and have no Developer ID signature or Apple notarization. Developer ID signing and notarization are a separate distribution path described in the [release guide](docs/releasing.md). Version 1.0.0 remains unreleased. Never commit certificates, signing keys, notarization credentials, or private reports to this repository.
+Community packages retain ad-hoc signing and have no Developer ID signature or Apple notarization. Developer ID signing and notarization are a separate distribution path described in the [release guide](docs/releasing.md). Never commit certificates, signing keys, notarization credentials, or private reports to this repository.

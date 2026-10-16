@@ -39,4 +39,4 @@ Contributions are accepted under the project's [MIT License](LICENSE). Only subm
 
 ## Repository and checks
 
-Contribute through [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Use the bilingual [issue forms](https://github.com/qianmokano/LinkPort/issues/new/choose) and check [GitHub Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml) before requesting review. Security and conduct reports use the private channels in the linked policies. Version 1.0.0 remains unreleased; distribution steps are in the [release guide](docs/releasing.md).
+Contribute through [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Use the bilingual [issue forms](https://github.com/qianmokano/LinkPort/issues/new/choose) and check [GitHub Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml) before requesting review. Security and conduct reports use the private channels in the linked policies. Distribution steps are in the [release guide](docs/releasing.md).

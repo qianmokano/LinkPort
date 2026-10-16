@@ -2,7 +2,7 @@
 
 [Development](development.md) · [Testing](testing.md) · [Changelog](../CHANGELOG.md) · [Security policy](../SECURITY.md)
 
-This is an operator guide for [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Version **1.0.0, build 2** is currently unreleased. Publishing the source does not publish a version tag, release, or download package.
+This is an operator guide for [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Version **1.0.0, build 2** uses the community distribution path with ad-hoc signing. Publishing source and publishing versioned download packages are separate operations.
 
 ## Repository administration
 
@@ -30,7 +30,7 @@ The output app and ZIP retain ad-hoc signing, with no Developer ID signature or 
 
 This is the community distribution path: retain the build script's ad-hoc signature and package the resulting app without Developer ID signing or Apple notarization. Describe it explicitly as **ad-hoc signed and not notarized**. Do not remove its existing signature or imply that Apple has verified the developer.
 
-Gatekeeper may block the downloaded app. Include the graphical first-launch steps and quarantine-removal option from the [README](../README.md#if-macos-blocks-the-app-gatekeeper), along with system requirements and any outstanding device tests. Test the exact downloaded archive while its quarantine attribute is still present before recording first-launch behavior. No 1.0.0 community package is published as part of making this source repository public.
+Gatekeeper may block the downloaded app. Include the graphical first-launch steps and quarantine-removal option from the [README](../README.md#if-macos-blocks-the-app-gatekeeper), along with system requirements and any outstanding device tests. Test the exact downloaded archive while its quarantine attribute is still present before recording first-launch behavior.
 
 After successful checks, continue to **Review and publish** below. The Developer ID path is optional and requires its own signing and notarization steps.
 
