@@ -15,6 +15,6 @@ The maintainer, qianmokano, is responsible for applying this policy fairly. Depe
 
 ## Reporting
 
-A public repository and dedicated private conduct-reporting channel have not been established yet. If you already have a private communication channel with the maintainer, use it. Otherwise, wait for the published reporting channel rather than posting personal or sensitive incident details in public. Maintainers must establish and document that channel before inviting a public community; Git commit author addresses are not designated reporting addresses.
+Report conduct concerns privately to the maintainer at [1600366159@qq.com](mailto:1600366159@qq.com), the contact email published on [qianmokano's GitHub profile](https://github.com/qianmokano). English and Chinese are both welcome. Do not post personal or sensitive incident details in public issues.
 
 Reports should include the context and relevant evidence and will be shared only with people needed to assess and address them. For technical vulnerabilities, follow the separate [security policy](SECURITY.md).

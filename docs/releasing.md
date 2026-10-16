@@ -2,16 +2,15 @@
 
 [Development](development.md) · [Testing](testing.md) · [Changelog](../CHANGELOG.md) · [Security policy](../SECURITY.md)
 
-This is an operator guide. Version **1.0.0, build 2** is currently unreleased. The repository preparation does not create a remote, push a tag, publish a release, or perform Apple signing/notarization.
+This is an operator guide for [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Version **1.0.0, build 2** is currently unreleased. Publishing the source does not publish a version tag, release, or download package.
 
-## Before making the repository public
+## Repository administration
 
-1. Choose the actual repository owner and name; add only verified repository URLs to documentation. Run hosted CI and confirm its results before adding a status badge.
-2. Review tracked files and Git history for credentials, local paths, private data, and author metadata. Existing history includes a non-noreply author email. Preserving history also preserves that address; decide explicitly whether it is suitable for publication. Do not silently rewrite history. Revoke any exposed credential before considering history cleanup.
-3. Confirm rights to source and assets. The project code, docs, and original branch artwork use MIT; browser icons shown in screenshots belong to their respective owners.
-4. Enable GitHub private vulnerability reporting and verify the report action. Establish a private conduct-reporting channel, then replace the pending notices in the security policy and code of conduct. Do not infer a contact address from Git commits.
-5. Enable Issues and Actions, inspect the issue forms, and run CI on the actual public repository. Configure branch protection to require its check after the first successful run. Repository settings are not applied by the local workflow files.
-6. Remove the temporary local-preparation wording from the READMEs and contribution guide once those statements are no longer true. Downloads should link to a real release only after one exists.
+1. Keep [Issues](https://github.com/qianmokano/LinkPort/issues), [Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml), and [private vulnerability reporting](https://github.com/qianmokano/LinkPort/security/advisories/new) enabled. Use the published contact in the [code of conduct](../CODE_OF_CONDUCT.md) for conduct reports.
+2. Protect `main` with the actual CI check, prohibit force pushes and deletion, and retain the default administrator bypass. Additional approving reviews are not required. Repository settings are managed on GitHub, separately from workflow files.
+3. Review tracked files and `main` history for credentials, local paths, private data, and author metadata before publishing further history. The existing non-noreply author address is intentionally preserved with the original commits; do not rewrite shared history silently. Internal refs, temporary clones, and build directories are excluded from the published branch.
+4. Preserve the MIT notices for the project code, documentation, and original branch artwork. Browser icons shown in screenshots belong to their respective owners.
+5. Keep both READMEs and the [verification record](testing.md) accurate. Link downloads only after a release exists; add CI badges only after a successful hosted run.
 
 ## Versioning and preparation
 
@@ -25,11 +24,19 @@ From a clean checkout of the intended commit, run:
 ./scripts/check.sh
 ```
 
-The output app and ZIP are ad-hoc signed development artifacts. CI artifacts have the same status and are not notarized consumer downloads. Preserve the reports with the release review and complete the relevant device tests in the [manual checklist](testing.md).
+The output app and ZIP retain ad-hoc signing, with no Developer ID signature or Apple notarization. CI uploads are temporary development artifacts, not published releases. Preserve the reports with the release review and complete the relevant device tests in the [manual checklist](testing.md).
+
+## Community distribution with ad-hoc signing
+
+This is the community distribution path: retain the build script's ad-hoc signature and package the resulting app without Developer ID signing or Apple notarization. Describe it explicitly as **ad-hoc signed and not notarized**. Do not remove its existing signature or imply that Apple has verified the developer.
+
+Gatekeeper may block the downloaded app. Include the graphical first-launch steps and quarantine-removal option from the [README](../README.md#if-macos-blocks-the-app-gatekeeper), along with system requirements and any outstanding device tests. Test the exact downloaded archive while its quarantine attribute is still present before recording first-launch behavior. No 1.0.0 community package is published as part of making this source repository public.
+
+After successful checks, continue to **Review and publish** below. The Developer ID path is optional and requires its own signing and notarization steps.
 
 ## Developer ID signing and notarization
 
-Public distribution outside the Mac App Store uses a **Developer ID Application** certificate and Apple notarization. The maintainer must supply an appropriate Apple Developer account and certificate; the project contains neither credentials nor an automated release workflow. Consult Apple's [notarization overview](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution) and [custom workflow guide](https://developer.apple.com/documentation/security/customizing-the-notarization-workflow).
+For a Developer ID signed and notarized distribution, use a **Developer ID Application** certificate and Apple notarization. The maintainer must supply an appropriate Apple Developer account and certificate; the project contains neither credentials nor an automated release workflow. Consult Apple's [notarization overview](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution) and [custom workflow guide](https://developer.apple.com/documentation/security/customizing-the-notarization-workflow).
 
 Perform the following on the trusted release machine after successful checks. Set `LINKPORT_SIGNING_IDENTITY` locally to your actual certificate identity. Use an interactive Keychain profile for notarization credentials; never put passwords, private keys, certificates, or tokens in tracked files or command output.
 
@@ -69,8 +76,8 @@ Do not rerun the build or full check after signing: it replaces the output with 
 
 ## Review and publish
 
-Extract the final archive to a separate location. Verify both architectures and the macOS 26 deployment targets, MIT license, English/Chinese catalogs, signature, notarization ticket, and Gatekeeper assessment. Test that exact extracted app on the supported devices available; record missing devices explicitly. Do not make it the default merely to inspect it.
+Extract the final archive to a separate location. Verify both architectures and the macOS 26 deployment targets, MIT license, English/Chinese catalogs, and the signature appropriate to the selected path. For Developer ID distribution, also verify the stapled notarization ticket and successful Gatekeeper assessment. For community distribution, record the ad-hoc signature and actual Gatekeeper first-launch behavior without claiming notarization. Test that exact extracted app on the supported devices available; record missing devices explicitly. Do not make it the default merely to inspect it.
 
-After review, create the matching Git tag and a draft GitHub Release from that commit. Attach the final `LinkPort.zip` and `SHA256SUMS`, and include installation steps, system requirements, signing/notarization status, known limitations, and the changelog. Review the draft and publish it as a separate maintainer action. Never attach the pre-notarization or ad-hoc CI artifact as the signed release.
+When a version release is separately authorized, create the matching Git tag and a draft GitHub Release from that reviewed commit. Attach the final `LinkPort.zip` and `SHA256SUMS`, and include installation steps, system requirements, signing/notarization status, known limitations, and the changelog. Review the draft and publish it as a separate maintainer action. A community archive must be labeled ad-hoc signed and not notarized; a Developer ID release must use the final stapled archive. Never describe a CI artifact as a Developer ID signed or notarized release.
 
 Keep the original source commit/tag available with the distributed binary, preserve MIT notices in redistributions, and update download links only after the release is accessible.

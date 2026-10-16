@@ -1,1 +1,5 @@
 blank_issues_enabled: true
+contact_links:
+  - name: Private vulnerability report / 私密漏洞报告
+    url: https://github.com/qianmokano/LinkPort/security/advisories/new
+    about: Report security issues privately. 请勿在公开 Issue 中披露漏洞。

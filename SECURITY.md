@@ -6,13 +6,11 @@ LinkPort 1.0.0 is currently unreleased. Security fixes are made on the current `
 
 ## Reporting a vulnerability
 
-**The private vulnerability reporting channel is pending setup.** No public repository or designated security email has been configured. Existing Git author email addresses are not security contacts.
-
-Before publishing, the maintainer must enable GitHub private vulnerability reporting, verify that **Security → Report a vulnerability** is available, and update this policy with the verified repository link. Until then, use an already established private channel with the maintainer, if you have one. Do not publish exploit details or private URLs in issues; wait for a private channel if one is unavailable.
+Use [GitHub private vulnerability reporting](https://github.com/qianmokano/LinkPort/security/advisories/new), also available from **Security → Advisories → Report a vulnerability** in the repository. Reports are private to the reporter and the people involved in investigating them. English and Chinese are both welcome. Do not publish exploit details or private URLs in public issues.
 
 A private report should include the affected version/commit, macOS version and architecture, impact, and minimal reproduction using synthetic URLs or files. Remove credentials, tokens, private browsing information, and unrelated personal data. There is no promised response-time service level at this stage.
 
-Coordinate disclosure with the maintainer while a fix is investigated. Ordinary bugs and feature requests belong in the issue tracker once it exists.
+Coordinate disclosure with the maintainer while a fix is investigated. Ordinary bugs and feature requests belong in [Issues](https://github.com/qianmokano/LinkPort/issues).
 
 ## Security boundaries
 
@@ -20,4 +18,4 @@ LinkPort receives URLs through macOS and passes a chosen URL to an installed bro
 
 Browser order, visibility, language, and the welcome preference are stored locally. Automated tests use replacement services and isolated preferences. Default-browser changes and system consent remain explicit user actions.
 
-Development packages use ad-hoc signing. Public distribution requires a separate signing and notarization process described in the [release guide](docs/releasing.md). Never commit certificates, signing keys, notarization credentials, or private reports to this repository.
+Community packages retain ad-hoc signing and have no Developer ID signature or Apple notarization. Developer ID signing and notarization are a separate distribution path described in the [release guide](docs/releasing.md). Version 1.0.0 remains unreleased. Never commit certificates, signing keys, notarization credentials, or private reports to this repository.

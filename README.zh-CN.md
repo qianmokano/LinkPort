@@ -26,7 +26,7 @@ LinkPort 使用 SwiftUI 和 AppKit，没有第三方运行时依赖。
 | 构建 | Xcode 27 或更新版本，包含 macOS 27 SDK 和 Swift 6.4 或更新版本 |
 | 完整检查 | 上述构建工具，加上 Python 3.9 或更新版本（仅使用标准库） |
 
-**1.0.0 尚未正式发布。** 当前请从源码构建。脚本生成的是 **ad-hoc 签名开发版**，未进行 Developer ID 签名和 Apple 公证。面向其他用户的发行要求见[发布指南](docs/releasing.md)。
+**1.0.0 尚未正式发布。** 当前请从源码构建。脚本生成的是 **ad-hoc 签名应用**，未进行 Developer ID 签名和 Apple 公证。[发布指南](docs/releasing.md)分别说明这种社区版发行方式，以及 Developer ID 签名与公证的另一条发行路径。
 
 已在 macOS 27 的 Apple Silicon 上本地试用。Intel 版本已完成交叉编译并通过 Rosetta 启动；Intel 真机和 macOS 26 仍需设备验证。详见[测试与兼容性](docs/testing.md)。
 
@@ -118,7 +118,7 @@ defaults delete com.linkport.app
 
 请阅读[开发指南](docs/development.md)、[测试矩阵](docs/testing.md)和[贡献指南](CONTRIBUTING.md)。Issue 和 PR 均接受英文或中文。参与时遵守[行为准则](CODE_OF_CONDUCT.md)，安全问题请依照[安全政策](SECURITY.md)报告。
 
-仓库目前仅完成本地准备。公开仓库建立后再验证私密报告渠道及托管 CI，当前没有可链接的公开下载或 CI 状态。
+源码和协作入口为 [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort)。问题与功能建议请使用 [Issues](https://github.com/qianmokano/LinkPort/issues)，检查结果见 [GitHub Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml)，安全问题请使用[私密漏洞报告](https://github.com/qianmokano/LinkPort/security/advisories/new)。目前尚未发布版本下载。
 
 ## 许可证
 

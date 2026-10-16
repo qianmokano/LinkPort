@@ -26,7 +26,7 @@ LinkPort uses SwiftUI and AppKit and has no third-party runtime dependencies.
 | Build | Xcode 27 or later with the macOS 27 SDK and Swift 6.4 or later |
 | Full checks | The build tools above and Python 3.9 or later (standard library only) |
 
-**Version 1.0.0 is not released yet.** Build from source for now. The build script creates an **ad-hoc signed development app**, without Developer ID signing or Apple notarization. See the [release guide](docs/releasing.md) for public distribution requirements.
+**Version 1.0.0 is not released yet.** Build from source for now. The build script creates an **ad-hoc signed app**, without Developer ID signing or Apple notarization. The [release guide](docs/releasing.md) describes this community distribution path and the separate Developer ID/notarization path.
 
 Apple Silicon on macOS 27 has been exercised locally. Intel has been cross-compiled and launched under Rosetta; Intel hardware and macOS 26 still need device testing. See [testing and compatibility](docs/testing.md).
 
@@ -118,7 +118,7 @@ defaults delete com.linkport.app
 
 Read the [development guide](docs/development.md), [test matrix](docs/testing.md), and [contribution guide](CONTRIBUTING.md). Issues and pull requests may be written in English or Chinese. Follow the [code of conduct](CODE_OF_CONDUCT.md); security reports follow the [security policy](SECURITY.md).
 
-The repository is currently prepared locally. Private reporting and hosted CI will be verified when a public repository is established; there is no published download or CI status to link to yet.
+Source and contributions are hosted at [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Use [Issues](https://github.com/qianmokano/LinkPort/issues) for bugs and feature requests, [GitHub Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml) for checks, and [private vulnerability reporting](https://github.com/qianmokano/LinkPort/security/advisories/new) for security issues. No release downloads are published yet.
 
 ## License
 

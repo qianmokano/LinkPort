@@ -43,7 +43,7 @@ Historical notes record exploratory work, superseded approaches, and earlier tes
 
 ## Publication hygiene review
 
-The 2026-10-15 review covered 50 tracked text files (52 tracked files including two screenshots) and a pattern scan of 137 reachable historical text blobs at baseline `09285e5`. No common GitHub/AWS credential patterns, private-key headers, or personal home-directory paths were found. Email-like strings in test content use `example.com`. Git author metadata contains one non-noreply address; it was preserved, not promoted to a contact address. The [publication guide](releasing.md) records the required author-metadata review before making history public.
+The 2026-10-15 publication review covered 50 tracked text files (52 tracked files including two screenshots) and rescanned all 174 text blobs in the 33-commit `main` history through `6a4c6af`. No common GitHub/AWS credential patterns, private-key headers, personal home-directory paths, signing-key files, or generated build directories were found. Existing author metadata, including its non-noreply email, is intentionally preserved. The conduct contact was separately verified against the maintainer's public GitHub profile. Only `main` is published; internal refs and build output stay local.
 
 Both screenshots were visually checked: they show the app's example URL or General settings, and contain no PNG text-metadata chunks. The original app language and settings page were restored after capture. These targeted checks are preparation evidence, not a guarantee that every possible secret format has been detected.
 
@@ -61,7 +61,7 @@ Record app version/commit, macOS version, CPU, native/Rosetta mode, and pass/fai
 - [ ] Switch languages, light/dark appearance, and use VoiceOver through settings and the picker.
 - [ ] Exercise multiple physical displays, screen corners, Spaces, and fullscreen apps.
 - [ ] Test on macOS 26 and Intel hardware; record these separately from cross-builds and Rosetta.
-- [ ] Verify the final signed, stapled distribution archive as described in the release guide.
+- [ ] Verify the final distribution archive for the selected ad-hoc or Developer ID/notarization path as described in the release guide.
 
 ## Updating this record
 

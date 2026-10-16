@@ -4,7 +4,7 @@ Issues, pull requests, and discussion may be in **English or Chinese**. Please f
 
 ## Before making a change
 
-- Search existing issues when a hosted repository is available. For a substantial feature, describe the problem and proposed behavior before implementation.
+- Search [existing issues](https://github.com/qianmokano/LinkPort/issues). For a substantial feature, describe the problem and proposed behavior before implementation.
 - Report bugs with the app version, macOS version, CPU architecture, reproduction steps, and expected/actual behavior. Use example URLs and remove private data from screenshots and logs.
 - For vulnerabilities, follow [SECURITY.md](SECURITY.md) rather than posting reproduction details publicly.
 - The current product focuses on choosing a browser or copying a link. Rules, profiles, sync, extensions, and automatic updates require a separate design discussion.
@@ -37,6 +37,6 @@ Use descriptive commits, for example `Fix picker dismissal after copying a link`
 
 Contributions are accepted under the project's [MIT License](LICENSE). Only submit material you have the right to license, and preserve any required third-party notices.
 
-## Local preparation status
+## Repository and checks
 
-Hosted issue forms and CI are prepared but have not run remotely yet. Until a public repository and private contact channel exist, coordinate contributions directly with the maintainer through an already established channel. Publication steps are in the [release guide](docs/releasing.md).
+Contribute through [qianmokano/LinkPort](https://github.com/qianmokano/LinkPort). Use the bilingual [issue forms](https://github.com/qianmokano/LinkPort/issues/new/choose) and check [GitHub Actions](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml) before requesting review. Security and conduct reports use the private channels in the linked policies. Version 1.0.0 remains unreleased; distribution steps are in the [release guide](docs/releasing.md).
