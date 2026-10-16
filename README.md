@@ -63,6 +63,16 @@ shasum -a 256 -c SHA256SUMS
 
 On a managed Mac, this option may be restricted by your administrator. If the alert says the app is damaged or will damage your computer, stop and re-download, verify the checksum, or contact the maintainer rather than treating it as an unidentified-developer alert. See [Apple's instructions](https://support.apple.com/en-us/102445).
 
+#### Terminal alternative
+
+For a copy you trust, you can also remove the download quarantine attribute in Terminal, then open the app again:
+
+```sh
+xattr -dr com.apple.quarantine "/Applications/LinkPort.app"
+```
+
+Replace the path if you installed LinkPort elsewhere. This recursively removes the quarantine attribute from that app and its contents; it does not re-sign or notarize the app. Keep the attribute in place while testing the Gatekeeper instructions above.
+
 ## Using LinkPort
 
 Click a link in another app, then choose a browser. LinkPort can only handle links the app sends through the system default browser; embedded web views and links explicitly directed to a particular browser remain with that app.
