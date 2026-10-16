@@ -28,11 +28,15 @@ LinkPort 使用 SwiftUI 和 AppKit，没有第三方运行时依赖。
 | 构建 | Xcode 27 或更新版本，包含 macOS 27 SDK 和 Swift 6.4 或更新版本 |
 | 完整检查 | 上述构建工具，加上 Python 3.9 或更新版本（仅使用标准库） |
 
-**1.0.0 社区版。** 应用保留 **ad-hoc 签名**，未进行 Developer ID 签名和 Apple 公证。[发布指南](docs/releasing.md)分别说明这种社区版发行方式，以及 Developer ID 签名与公证的另一条发行路径。源码构建步骤见下文。
+**[1.0.0 社区版](https://github.com/qianmokano/LinkPort/releases/tag/v1.0.0)。** 应用保留 **ad-hoc 签名**，未进行 Developer ID 签名和 Apple 公证。[发布指南](docs/releasing.md)分别说明这种社区版发行方式，以及 Developer ID 签名与公证的另一条发行路径。
 
 已在 macOS 27 的 Apple Silicon 上本地试用。Intel 版本已完成交叉编译并通过 Rosetta 启动；Intel 真机和 macOS 26 仍需设备验证。详见[测试与兼容性](docs/testing.md)。
 
 ## 构建与安装
+
+下载 **[LinkPort 1.0.0（Universal ZIP）](https://github.com/qianmokano/LinkPort/releases/download/v1.0.0/LinkPort.zip)**，同时支持 Apple Silicon 和 Intel。解压后将 `LinkPort.app` 移至“应用程序”并启动。已知限制见[发行说明](https://github.com/qianmokano/LinkPort/releases/tag/v1.0.0)；如果被 macOS 拦截，请按下方 [Gatekeeper 步骤](#首次打开被-gatekeeper-拦截)处理。
+
+### 从源码构建
 
 下载或检出源码，在项目目录打开终端并运行：
 

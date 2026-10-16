@@ -43,6 +43,14 @@ The public repository was also checked for bilingual README rendering, loaded sc
 
 Historical notes record exploratory work, superseded approaches, and earlier test counts. They provide context, not additional claims of current coverage.
 
+### 1.0.0 release archive
+
+The [1.0.0 community release](https://github.com/qianmokano/LinkPort/releases/tag/v1.0.0) uses annotated tag `v1.0.0` at commit `0d3257f` (app version 1.0.0, build 2). The complete local check passed from that clean commit, and its [GitHub CI run](https://github.com/qianmokano/LinkPort/actions/runs/38849614736) passed with 37 Swift tests, 11 tooling tests, and 99.35% core line coverage. The app code, version metadata, and build scripts match the previously verified source-publication baseline.
+
+The final ZIP was extracted separately: all eight app files matched the built bundle, both architectures were present, the ad-hoc signature verified, and the extracted app launched successfully on the local Apple Silicon Mac. After publication, both assets were downloaded through their public URLs without authentication and matched the local files byte for byte. ZIP SHA-256: `f7e1ac7275edbfe88e3f26acdc1aa0924c994e090f3f7e2d84485bf2dcac3812`.
+
+The release has no Developer ID signature or Apple notarization. The download verification used a command-line client; it does not establish browser-quarantine or Gatekeeper first-launch behavior on another Mac. The pending device and interaction checks above remain pending.
+
 ## Publication hygiene review
 
 The 2026-10-15 publication review covered 50 tracked text files (52 tracked files including two screenshots) and rescanned all 174 text blobs in the 33-commit `main` history through `6a4c6af`. No common GitHub/AWS credential patterns, private-key headers, personal home-directory paths, signing-key files, or generated build directories were found. Existing author metadata, including its non-noreply email, is intentionally preserved. The conduct contact was separately verified against the maintainer's public GitHub profile. Only the public branch and reviewed release tags are pushed; internal refs and build output stay local.

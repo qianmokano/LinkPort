@@ -28,11 +28,15 @@ LinkPort uses SwiftUI and AppKit and has no third-party runtime dependencies.
 | Build | Xcode 27 or later with the macOS 27 SDK and Swift 6.4 or later |
 | Full checks | The build tools above and Python 3.9 or later (standard library only) |
 
-**Version 1.0.0 community edition.** The app retains **ad-hoc signing**, without Developer ID signing or Apple notarization. The [release guide](docs/releasing.md) describes this community distribution path and the separate Developer ID/notarization path. Build from source using the instructions below.
+**[Version 1.0.0 community edition](https://github.com/qianmokano/LinkPort/releases/tag/v1.0.0).** The app retains **ad-hoc signing**, without Developer ID signing or Apple notarization. The [release guide](docs/releasing.md) describes this community distribution path and the separate Developer ID/notarization path.
 
 Apple Silicon on macOS 27 has been exercised locally. Intel has been cross-compiled and launched under Rosetta; Intel hardware and macOS 26 still need device testing. See [testing and compatibility](docs/testing.md).
 
 ## Build and install
+
+Download **[LinkPort 1.0.0 (Universal ZIP)](https://github.com/qianmokano/LinkPort/releases/download/v1.0.0/LinkPort.zip)** for Apple Silicon and Intel. Extract it, move `LinkPort.app` to Applications, and launch the app. See the [release notes](https://github.com/qianmokano/LinkPort/releases/tag/v1.0.0) for known limitations and the [Gatekeeper steps](#if-macos-blocks-the-app-gatekeeper) below if macOS blocks it.
+
+### Build from source
 
 Download or check out the source, open a terminal in the project directory, and run:
 
