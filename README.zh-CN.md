@@ -1,5 +1,7 @@
 # LinkPort
 
+[![CI](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml)
+
 **每个链接，自由选择。** 原生 macOS 菜单栏工具：其他应用打开网站时，选择使用哪个浏览器，或者只复制网址。
 
 [English](README.md) · [贡献指南](CONTRIBUTING.md) · [开发文档](docs/development.md) · [MIT 许可证](LICENSE)

@@ -1,5 +1,7 @@
 # LinkPort
 
+[![CI](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml)
+
 **A choice for every link.** A native macOS menu bar utility that lets you choose a browser when another app opens a website—or copy the URL instead.
 
 [简体中文](README.zh-CN.md) · [Contributing](CONTRIBUTING.md) · [Development](docs/development.md) · [MIT license](LICENSE)

@@ -20,11 +20,13 @@ Reports are under `.build/reports/`. The coverage gate is **80% line coverage of
 
 ## Current verification record
 
-Local verification on 2026-10-15: macOS 27.0.1, Apple Silicon, Xcode 27.0, Swift 6.4. `./scripts/check.sh` passed in the working checkout and in a fresh local clone of commit `0078d0c`, without copying build artifacts or ignored files. All **37 Swift tests and 11 tooling tests passed**. LinkPortCore line coverage was **99.35% (306/308)**.
+Local verification on 2026-10-15: macOS 27.0.1, Apple Silicon, Xcode 27.0, Swift 6.4. `./scripts/check.sh` passed before publication commit `41d8d39`. A fresh local clone of commit `0078d0c` had also passed earlier that day, without copying build artifacts or ignored files. All **37 Swift tests and 11 tooling tests passed**. LinkPortCore line coverage was **99.35% (306/308)**.
 
 Both release architectures compiled from scratch with a macOS 26 deployment target. The app's browser registration, icon resources, English/Chinese catalogs, MIT license, signature, ZIP contents, and SHA-256 manifest passed validation. The Swift Testing XML contains 37 test cases. Shell syntax checks, YAML parsing, local documentation links, and actionlint 1.7.12 also passed; the actionlint configuration explicitly permits GitHub's documented Xcode 27 preview label. The app sources, public APIs, package manifest, preferences, and application metadata are unchanged by this preparation.
 
-Hosted CI has not run: no remote repository is configured. Signing is ad-hoc; no notarization or public release is claimed.
+The [first hosted CI run](https://github.com/qianmokano/LinkPort/actions/runs/38848627059) passed on publication commit `41d8d39` on 2026-10-15 (Pacific time), using the `xcode-27` runner and Xcode 27.0. All **37 Swift tests and 11 tooling tests passed**, with **99.35% (306/308)** core line coverage and the unchanged **80%** gate. The Universal build, deployment-target/resource/signature checks, and ZIP validation passed. Both report and development-build artifact uploads succeeded. See [current CI status](https://github.com/qianmokano/LinkPort/actions/workflows/ci.yml) for subsequent commits. Signing is ad-hoc; version 1.0.0 remains unreleased, with no version tags, Developer ID signature, or Apple notarization.
+
+The public repository was also checked for bilingual README rendering, loaded screenshots, contribution/conduct/security policies, MIT license recognition, and both rendered issue forms. GitHub private vulnerability reporting is enabled; the security form was inspected without creating an advisory or report. `main` requires the GitHub Actions check **Test and build Universal app**, with the branch required to be current, force pushes/deletion disabled, administrator bypass retained, and no additional approval-count requirement.
 
 | Scenario | Evidence / status |
 | --- | --- |
